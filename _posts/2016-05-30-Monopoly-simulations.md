@@ -3,8 +3,6 @@ layout: post
 title: Rolling 3 Doubles in Monopoly
 ---
 
-May 30, 2016  
-
 Tonight my two kids and I were playing Monopoly. It's a terrible, brutal game that usually ends in bad feelings, but for some reason they always want to play it. One of the rules of the game is that if you roll a double (e.g., two 2s), you get another turn. However, if you roll doubles three times in a row, you are sent to jail.
 
 I wondered what was the probability of rolling 3 doubles in a row. It seemed like it would be pretty unlikely, but each of us had this happen to us over the course of the game. Now what's the chances of that happening?
