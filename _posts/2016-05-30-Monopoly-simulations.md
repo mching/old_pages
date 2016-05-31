@@ -1,4 +1,7 @@
-# Rolling 3 Doubles in Monopoly
+---
+layout: post
+title: Rolling 3 Doubles in Monopoly
+---
 May 30, 2016  
 
 
