@@ -1,8 +1,8 @@
 ---
-layout = post
+layout: post
+title: Rolling 3 Doubles in Monopoly
 ---
 
-# Rolling 3 Doubles in Monopoly
 May 30, 2016  
 
 Tonight my two kids and I were playing Monopoly. It's a terrible, brutal game that usually ends in bad feelings, but for some reason they always want to play it. One of the rules of the game is that if you roll a double (e.g., two 2s), you get another turn. However, if you roll doubles three times in a row, you are sent to jail.
@@ -72,7 +72,7 @@ pbinom(2, 150, p = 1/216, lower.tail = F)
 ## [1] 0.03310417
 ```
 
-3%! Not that rare after all! I mean, it's pretty unlikely, but we observed it in the one tiem we played this game in 6 months.
+3%! Not that rare after all! I mean, it's pretty unlikely, but we observed it in the one time we played this game in 6 months.
 
 Here's the probability that it will happen at least once in a game of 150 turns.
 
