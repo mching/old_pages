@@ -37,26 +37,6 @@ First, I needed to read in the data then let's take a look:
 
 ```r
 library(dplyr)
-```
-
-```
-## 
-## Attaching package: 'dplyr'
-```
-
-```
-## The following objects are masked from 'package:stats':
-## 
-##     filter, lag
-```
-
-```
-## The following objects are masked from 'package:base':
-## 
-##     intersect, setdiff, setequal, union
-```
-
-```r
 library(stringr)
 library(tidyr)
 photos <- read.csv(file = "~/Dropbox/Mike/photo_analysis/all_photo_dates.csv")
@@ -142,7 +122,7 @@ photos
 ## ..                ...                     ...                 ...   ...
 ```
 
-Now we want to get a summary of the years of the photos in each folder.
+Now we want to get a summary of the years of the photos in each folder. I used the mode function from [here](http://stackoverflow.com/questions/2547402/is-there-a-built-in-function-for-finding-the-mode) to find out what was the most common year of the photos in each folder.
 
 
 ```r
@@ -173,20 +153,7 @@ folder_years
 ## ..                     ...   ...
 ```
 
-Finally it'd be great if we could get a list of all the folders corresponding to each year.
-
-
-```r
-table(folder_years$year, useNA = "ifany")
-```
-
-```
-## 
-## 2001 2002 2003 2004 2005 2006 2007 2008 2009 2010 2011 2012 2013 2014 2015 
-##    1   18    4    9   23   53   48   19   23   20   29   26   15    5    2 
-## 2016 <NA> 
-##    1   36
-```
+Finally it'd be great if we could get a list of all the folders corresponding to each year. To do this, I created an empty list then populated it based on the most common year of the photos in each folder.
 
 
 ```r
@@ -196,161 +163,16 @@ for(i in sort(unique(folder_years$year))) {
   x <- folder_years %>% filter(year == i)
   folder_output[as.character(i)][[1]] <- x[,1]
 }
+```
 
-folder_output
+It worked great, and here's a sampling:
+
+
+```r
+folder_output[["2010"]]
 ```
 
 ```
-## $`2001`
-## Source: local data frame [1 x 1]
-## 
-##       dname
-##       <chr>
-## 1 Las Vegas
-## 
-## $`2002`
-## Source: local data frame [18 x 1]
-## 
-##                      dname
-##                      <chr>
-## 1                 Cabrillo
-## 2           Chicken Bridge
-## 3           Corona del Mar
-## 4                   dinner
-## 5              Dodger Game
-## 6     Greg's Holiday Party
-## 7        Ho'ike Hula night
-## 8           Hollywood Bowl
-## 9                 Holy Jim
-## 10        Jimmy Graduation
-## 11             Joshua Tree
-## 12 Malibu Creek State Park
-## 13                    Misc
-## 14                Mt. Lowe
-## 15                 Na Mamo
-## 16           Redondo Beach
-## 17  Su-Yu's farewell lunch
-## 18               Surfliner
-## 
-## $`2003`
-## Source: local data frame [4 x 1]
-## 
-##                   dname
-##                   <chr>
-## 1 Graduation Med School
-## 2     Sturtevant Canyon
-## 3          Trail Canyon
-## 4    Vancouver Marathon
-## 
-## $`2004`
-## Source: local data frame [9 x 1]
-## 
-##                         dname
-##                         <chr>
-## 1                  Fruit Tart
-## 2            Gus Fawn Wedding
-## 3    Leng and Nan's Birthdays
-## 4             Mike's Birthday
-## 5 Miscellaneous Family Photos
-## 6  Namphol and Vivian Wedding
-## 7                  Nisei Week
-## 8                    seaworld
-## 9              Virgin Islands
-## 
-## $`2005`
-## Source: local data frame [23 x 1]
-## 
-##                        dname
-##                        <chr>
-## 1                Camp Milken
-## 2                   Car seat
-## 3             Dad's Pictures
-## 4  Demetra's Christmas Party
-## 5   El Capitan Canyon-Milken
-## 6                  Feb Bdays
-## 7            First D50 shots
-## 8             Fourth of July
-## 9                Hanauma Bay
-## 10                    Hawaii
-## ..                       ...
-## 
-## $`2006`
-## Source: local data frame [53 x 1]
-## 
-##                                      dname
-##                                      <chr>
-## 1                       Blueberry Festival
-## 2                           Boston Day Out
-## 3                                  Bubbles
-## 4                                  Bunnies
-## 5                                 Cape Cod
-## 6                                Car Seats
-## 7  Childrens' Book Festival and Greek Fest
-## 8                               Ching Ming
-## 9                                   Crafts
-## 10                                Descanso
-## ..                                     ...
-## 
-## $`2007`
-## Source: local data frame [48 x 1]
-## 
-##                                         dname
-##                                         <chr>
-## 1                                BOB Stroller
-## 2                      Boston Police T-shirts
-## 3                                       Cards
-## 4            Childrens' Museum with Alamillos
-## 5                                 Christopher
-## 6                              Day in Waltham
-## 7                            DeCordova Museum
-## 8       Drumlin Farm - Sap to Syrup Breakfast
-## 9                      Emerson's 1st Birthday
-## 10 Eric Carle Museum - Allen Say Book Signing
-## ..                                        ...
-## 
-## $`2008`
-## Source: local data frame [19 x 1]
-## 
-##                           dname
-##                           <chr>
-## 1      Emerson's Birthday Party
-## 2          Flat Stanley's Visit
-## 3          Frog Went A Courtin'
-## 4      Grant's Birthday Party_2
-## 5                         Knits
-## 6    Melissa and Michelle visit
-## 7        Mike Passport Pictures
-## 8                       Molokai
-## 9             Mom's Club Brunch
-## 10                 Owen at CCMS
-## 11 Phoebe Announcement Pictures
-## 12                 Phoebe-Birth
-## 13         Phoebe's Impressions
-## 14             Printed Pictures
-## 15                        Raffi
-## 16         Ronak's 2nd Birthday
-## 17      Sheep Shearing Festival
-## 18           Thida-Matt Wedding
-## 19                      To sell
-## 
-## $`2009`
-## Source: local data frame [23 x 1]
-## 
-##                              dname
-##                              <chr>
-## 1          Braden's Birthday Party
-## 2                     CDs in box A
-## 3                    Dunns Visit_1
-## 4   Edaville - Day Out with Thomas
-## 5                     Eric's Visit
-## 6          Farewell BBQ at Ferry's
-## 7                      Ferry Visit
-## 8                  Furlough Friday
-## 9  Honolulu Holiday Lights Trolley
-## 10       Jake's 1st Birthday Party
-## ..                             ...
-## 
-## $`2010`
 ## Source: local data frame [20 x 1]
 ## 
 ##                             dname
@@ -375,86 +197,5 @@ folder_output
 ## 18                Shellie Wedding
 ## 19               Stegosaurus Walk
 ## 20           Toren's 3rd birthday
-## 
-## $`2011`
-## Source: local data frame [29 x 1]
-## 
-##                                      dname
-##                                      <chr>
-## 1                       Dunn's baby shower
-## 2                  Elijah's Birthday Party
-## 3                    Hannie's 3rd Birthday
-## 4              Hannie's 3rd Birthday Party
-## 5                        Home Improvements
-## 6                Iolani Christmas Activity
-## 7               Iolani co2024 Beach Picnic
-## 8  Iolani co2024 Fieldtrip to Fire Station
-## 9               Iolani co2024 Thanksgiving
-## 10        Iolani Kindergarten Beach Picnic
-## ..                                     ...
-## 
-## $`2012`
-## Source: local data frame [26 x 1]
-## 
-##                                              dname
-##                                              <chr>
-## 1                            Den 8-Honolulu Museum
-## 2                                 Den 8-KITV Visit
-## 3                          Evan 4th birthday party
-## 4                              Evan's 4th Birthday
-## 5                                Hannie's Birthday
-## 6                   Hero Factory Geo Tank Breakout
-## 7                               Hydroponic Lettuce
-## 8                        Iolani 100 days of school
-## 9  Iolani co2024 Fieldtrip Foster Botanical Garden
-## 10                         Iolani co2024 headshots
-## ..                                             ...
-## 
-## $`2013`
-## Source: local data frame [15 x 1]
-## 
-##                                 dname
-##                                 <chr>
-## 1              Camping 2024 2nd grade
-## 2                   Cub Scout Bowling
-## 3  Cub Scouts Pacific Aviation Museum
-## 4                Disney Alaska Cruise
-## 5                  EFMP holiday party
-## 6                 Evan's 5th Birthday
-## 7                 Fairy Tale Festival
-## 8                         Girl Scouts
-## 9                       KCS Ho'omoana
-## 10                 Nan MEd Graduation
-## 11                Owen's 7th Birthday
-## 12            Pack325 Aiea Loop Trail
-## 13           Pack325 Kaena Point Hike
-## 14              Sarah Andrea Ceremony
-## 15                  Snooze at the Zoo
-## 
-## $`2014`
-## Source: local data frame [5 x 1]
-## 
-##                               dname
-##                               <chr>
-## 1                  co2026 Hoolaulea
-## 2 Evan and Aki's 6th Birthday Party
-## 3              Gloria-Katrina Visit
-## 4             Nick-Michaela Wedding
-## 5               Owen's 8th Birthday
-## 
-## $`2015`
-## Source: local data frame [2 x 1]
-## 
-##                            dname
-##                            <chr>
-## 1          Den 8 Obstacle Course
-## 2 Matthew Tom 1st Birthday Party
-## 
-## $`2016`
-## Source: local data frame [1 x 1]
-## 
-##                  dname
-##                  <chr>
-## 1 Owen's 10th Birthday
 ```
 
