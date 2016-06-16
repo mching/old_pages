@@ -89,8 +89,7 @@ photos
 ```
 
 # Reformatting the Directory and File Name Structure
-We can see that the `exiftool` command read in the file names in the format `./directoryname/filename`. I need to split out that directory name and the component files. We can do it using the `separate` function from the `tidyr` package.
-
+The `exiftool` command read in the file names in the format `./directoryname/filename`. I needed to split out that directory name and the component files. After trying `strsplit` and its `stringr` cousins, I found that it was easiest to do this using the `separate` function from the `tidyr` package.
 
 ```r
 photos <- photos %>% separate(SourceFile, c("dot", "dname", "fname"), sep = "/", remove = TRUE)
@@ -117,8 +116,7 @@ photos
 ```
 
 # Formatting the Date Column
-Ok, next thing we need to do is to take care of that date column and put it into a form that R can work with. I used POSIXct because POSIXlt caused problems when trying to add it to the data frame. This is because POSIXlt is a list, and POSIXct represents the number of seconds since the beginning of 1970.
-
+Ok, next thing we needed to do was to take care of that date column and put it into a form that R can work with. I used POSIXct because POSIXlt caused problems when trying to add it to the data frame. This is because POSIXlt is a list, and POSIXct represents the number of seconds since the beginning of 1970.
 
 ```r
 photos$DateTimeOriginal <- as.POSIXct(strptime(photos$DateTimeOriginal, format = "%Y:%m:%d %H:%M:%S"))
@@ -151,7 +149,7 @@ photos
 ```
 
 # Summarizing the Years in Each Folder
-Now we want to get a summary of the years of the photos in each folder. I used the mode function from [here](http://stackoverflow.com/questions/2547402/is-there-a-built-in-function-for-finding-the-mode) to find out what was the most common year of the photos in each folder.
+Now we needed to figure out the best way to describe the year of each folder. I used the `Mode` function from [here](http://stackoverflow.com/questions/2547402/is-there-a-built-in-function-for-finding-the-mode) to find out what was the most common year in each folder.
 
 
 ```r
@@ -182,7 +180,7 @@ folder_years
 ## ..                     ...   ...
 ```
 
-Finally it'd be great if we could get a list of all the folders corresponding to each year. To do this, I created an empty list then populated it based on the most common year of the photos in each folder.
+Finally we needed to group the folders by year. To do this, I created an empty list then populated it based on the most common year of the photos in each folder.
 
 
 ```r
@@ -215,7 +213,7 @@ folder_output[["2010"]]
 ```
 
 # Putting the Lists by Year into a Convenient Format
-To actually move the directories, I'd like to get a string of the directory names with quotes around the names. The quotes are needed because of the spaces in most of the names. For example "Dayton's 5th birthday" "Gus Ryan Phillip Visit" etc.
+To actually move the directories, I wanted to get a string of the directory names with quotes around the names. The quotes were needed because of the spaces in most of the names (e.g., "Dayton's 5th birthday" "Gus Ryan Phillip Visit" etc).
 
 To do this I created a helper function that takes the contents of a character vector, put quotes around them, and then writes it out.
 
@@ -248,3 +246,5 @@ All I have to do now is to copy and paste each series of folder names into the O
 That took more than 6 hours to figure out, but I had fun learning and only a little frustration. I know I could probably create some bash script to do this same thing, but I don't know bash hardly at all, and anyway, I wanted to figure out how to do it in R. Good thing there's no Comments on this blog. I would be really sad if someone posted a really tiny bash script that could do this same thing!
 
 I think the lesson learned here is that if you have lots of photo folders, it's  best to have some kind of directory organization structure on the hard drive, rather than relying on Picasa or some other organization program to keep your folders in order. This way it will be easier to migrate to a new solution, and in theory, you know where things are even when you don't know exactly what the folder is called. If I were looking for a picture from the first day of my son's third grade year, I would know to look in 2014, and that would narrow the search down from all my folders to just the 2014 folders.
+
+Next step--I wonder what are some of the patterns in that date/time variable?
