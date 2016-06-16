@@ -1,11 +1,15 @@
 _site
 .DS_Store
 .jekyll
+.jekyll-metadata
 .bundle
 .sass-cache
 Gemfile
 Gemfile.lock
 node_modules
 package.json
+<<<<<<< HEAD
 .Rproj.user
 *.html
+=======
+>>>>>>> 8b0af42b48b5bacc5fd504ba0bed8aa897635d2c
