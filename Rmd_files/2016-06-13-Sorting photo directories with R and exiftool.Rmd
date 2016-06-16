@@ -3,9 +3,9 @@ output:
   html_document: 
     keep_md: yes
 ---
-# Date analysis of photos with R and exiftool
+# Sorting photo directories with R and exiftool
 
-We were fans of Google's Picasa photo organization software, but when it was discontinued, I decided that I would like to transfer all my digital photos onto an external drive and then into Adobe Lightroom. To do so, however, my "research" told me that it would be best to group them into catalogs based on year, mainly because I have on the order of 10^5 photos.
+We were fans of Google's Picasa photo organization software, but when it was discontinued, I decided that I would like to transfer all my digital photos onto an external drive and then into Adobe Lightroom. To do so, however, my "research" told me that it would be best to group them into catalogs based on year, mainly because I have on the order of 10<sup>5</sup> photos.
 
 Right now I have my pictures organized into about 300-400 directories by event. I decided I wanted to organize all of my folders as directories within year directories. So all the 2016 folders would need to be sorted into a 2016 directory, all the 2015 folders would go into a 2015 directory, etc.
 
@@ -85,7 +85,7 @@ folder_output <- list()
 
 for(i in sort(unique(folder_years$year))) {
   x <- folder_years %>% filter(year == i)
-  folder_output[as.character(i)][[1]] <- x[,1]
+  folder_output[as.character(i)][1] <- x[,1]
 }
 ```
 
@@ -95,3 +95,32 @@ It worked great, and here's a sampling:
 folder_output[["2010"]]
 ```
 
+I would like to write these out to files with quotes around the names, and the filename being the year. For example 2010.txt with "Dayton's 5th birthday" "Gus Ryan Phillip Visit" etc.
+
+For each 1st level list in `folder_output`, get the contents, put quotes around them, and then write it out.
+
+```{r}
+x <- folder_output[["2003"]]
+x <- folder_output[[3]]
+str(x)
+x
+
+format_dir_list <- function(x) {
+  z <- NA
+  for (i in 1:length(x)) {
+    z[i] <- paste0("\'", x[i], "\'")
+  }
+  return(cat(z))
+}
+
+format_dir_list(folder_output[[2]])
+
+
+for (i in 1:16) {
+  cat("\n")
+  print(names(folder_output)[i])
+  cat("\n")
+  format_dir_list(folder_output[[i]])
+  cat("\n")
+}
+```
