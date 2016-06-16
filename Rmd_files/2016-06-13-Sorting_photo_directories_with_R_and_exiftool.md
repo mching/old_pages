@@ -1,8 +1,3 @@
----
-output: 
-  html_document: 
-    keep_md: yes
----
 
 ---
 layout: post
@@ -41,45 +36,125 @@ Sweet! Now that's something I can work with!
 # Back to R: Cleaning and Formatting the Raw Data
 First, I needed to read in the data.
 
-```{r}
+
+```r
 library(dplyr)
+```
+
+```
+## 
+## Attaching package: 'dplyr'
+```
+
+```
+## The following objects are masked from 'package:stats':
+## 
+##     filter, lag
+```
+
+```
+## The following objects are masked from 'package:base':
+## 
+##     intersect, setdiff, setequal, union
+```
+
+```r
 library(stringr)
 library(tidyr)
 photos <- read.csv(file = "~/Dropbox/Mike/photo_analysis/all_photo_dates.csv")
 photos <- tbl_df(photos)
 ```
 Here's what the first 10 rows look like.
-```{r}
+
+```r
 photos
+```
+
+```
+## Source: local data frame [24,129 x 2]
+## 
+##                           SourceFile     DateTimeOriginal
+##                               <fctr>               <fctr>
+## 1         ./2010a/OwenAki2010_06.JPG  2010:06:28 19:29:37
+## 2    ./2010a/OwenAkiKCS_Sept2010.jpg                     
+## 3        ./BOB Stroller/CIMG2414.JPG  2007:07:16 15:12:32
+## 4        ./BOB Stroller/CIMG2415.JPG  2007:07:16 15:12:46
+## 5        ./BOB Stroller/CIMG2416.JPG  2007:07:16 15:12:54
+## 6        ./BOB Stroller/CIMG2417.JPG  2007:07:16 15:13:41
+## 7  ./Blueberry Festival/P7220001.JPG 2006:07:22 13:31:47Z
+## 8  ./Blueberry Festival/P7220002.JPG 2006:07:22 13:31:53Z
+## 9  ./Blueberry Festival/P7220003.JPG 2006:07:22 13:40:04Z
+## 10 ./Blueberry Festival/P7220004.JPG 2006:07:22 13:40:10Z
+## ..                               ...                  ...
 ```
 
 # Reformatting the Directory and File Name Structure
 We can see that the `exiftool` command read in the file names in the format `./directoryname/filename`. I need to split out that directory name and the component files. We can do it using the `separate` function from the `tidyr` package.
 
-```{r}
+
+```r
 photos <- photos %>% separate(SourceFile, c("dot", "dname", "fname"), sep = "/", remove = TRUE)
 photos <- photos[,2:4] # drop the first column of dots
 photos
 ```
 
+```
+## Source: local data frame [24,129 x 3]
+## 
+##                 dname                   fname     DateTimeOriginal
+##                 <chr>                   <chr>               <fctr>
+## 1               2010a      OwenAki2010_06.JPG  2010:06:28 19:29:37
+## 2               2010a OwenAkiKCS_Sept2010.jpg                     
+## 3        BOB Stroller            CIMG2414.JPG  2007:07:16 15:12:32
+## 4        BOB Stroller            CIMG2415.JPG  2007:07:16 15:12:46
+## 5        BOB Stroller            CIMG2416.JPG  2007:07:16 15:12:54
+## 6        BOB Stroller            CIMG2417.JPG  2007:07:16 15:13:41
+## 7  Blueberry Festival            P7220001.JPG 2006:07:22 13:31:47Z
+## 8  Blueberry Festival            P7220002.JPG 2006:07:22 13:31:53Z
+## 9  Blueberry Festival            P7220003.JPG 2006:07:22 13:40:04Z
+## 10 Blueberry Festival            P7220004.JPG 2006:07:22 13:40:10Z
+## ..                ...                     ...                  ...
+```
+
 # Formatting the Date Column
 Ok, next thing we need to do is to take care of that date column and put it into a form that R can work with. I used POSIXct because POSIXlt caused problems when trying to add it to the data frame. This is because POSIXlt is a list, and POSIXct represents the number of seconds since the beginning of 1970.
 
-```{r}
+
+```r
 photos$DateTimeOriginal <- as.POSIXct(strptime(photos$DateTimeOriginal, format = "%Y:%m:%d %H:%M:%S"))
 ```
 
 One of the problems with POSIXct is that it's not as easy to get the year out compared to POSIXlt. No problem, we can just temporarily convert to POSIXlt and add 1900 (the start date of POSIXlt years).
 
-```{r}
+
+```r
 photos <- photos %>% mutate(year = as.POSIXlt(DateTimeOriginal)$year + 1900)
 photos
+```
+
+```
+## Source: local data frame [24,129 x 4]
+## 
+##                 dname                   fname    DateTimeOriginal  year
+##                 <chr>                   <chr>              <time> <dbl>
+## 1               2010a      OwenAki2010_06.JPG 2010-06-28 19:29:37  2010
+## 2               2010a OwenAkiKCS_Sept2010.jpg                <NA>    NA
+## 3        BOB Stroller            CIMG2414.JPG 2007-07-16 15:12:32  2007
+## 4        BOB Stroller            CIMG2415.JPG 2007-07-16 15:12:46  2007
+## 5        BOB Stroller            CIMG2416.JPG 2007-07-16 15:12:54  2007
+## 6        BOB Stroller            CIMG2417.JPG 2007-07-16 15:13:41  2007
+## 7  Blueberry Festival            P7220001.JPG 2006-07-22 13:31:47  2006
+## 8  Blueberry Festival            P7220002.JPG 2006-07-22 13:31:53  2006
+## 9  Blueberry Festival            P7220003.JPG 2006-07-22 13:40:04  2006
+## 10 Blueberry Festival            P7220004.JPG 2006-07-22 13:40:10  2006
+## ..                ...                     ...                 ...   ...
 ```
 
 # Summarizing the Years in Each Folder
 Now we want to get a summary of the years of the photos in each folder. I used the mode function from [here](http://stackoverflow.com/questions/2547402/is-there-a-built-in-function-for-finding-the-mode) to find out what was the most common year of the photos in each folder.
 
-```{r}
+
+```r
 Mode <- function(x) {
   ux <- unique(x)
   ux[which.max(tabulate(match(x, ux)))]
@@ -89,9 +164,28 @@ folder_years <- photos %>% group_by(dname) %>% summarize(year = Mode(year))
 folder_years
 ```
 
+```
+## Source: local data frame [332 x 2]
+## 
+##                      dname  year
+##                      <chr> <dbl>
+## 1                    2010a  2010
+## 2       Blueberry Festival  2006
+## 3             BOB Stroller  2007
+## 4           Boston Day Out  2006
+## 5   Boston Police T-shirts  2007
+## 6  Braden's Birthday Party  2009
+## 7                  Bubbles  2006
+## 8                  Bunnies  2006
+## 9                 Cabrillo  2002
+## 10             Camp Milken  2005
+## ..                     ...   ...
+```
+
 Finally it'd be great if we could get a list of all the folders corresponding to each year. To do this, I created an empty list then populated it based on the most common year of the photos in each folder.
 
-```{r}
+
+```r
 folder_output <- list()
 
 for(i in sort(unique(folder_years$year))) {
@@ -102,8 +196,22 @@ for(i in sort(unique(folder_years$year))) {
 
 It worked great, and here's a sampling:
 
-```{r}
+
+```r
 folder_output[["2010"]]
+```
+
+```
+##  [1] "2010a"                          "Dayton's 5th birthday"         
+##  [3] "Gus Ryan Phillip Visit"         "Hannah's Birthday"             
+##  [5] "Ihilani"                        "Jeff and Lynne Wedding Weekend"
+##  [7] "Jenica's 4th birthday"          "Kathy Photos"                  
+##  [9] "Kawaiaha'o Beach Day"           "La Pietra"                     
+## [11] "La Pietra - MS Camp"            "La Pietra Class Day"           
+## [13] "LAMC fieldtrip"                 "Lyon Arboretum"                
+## [15] "Owen's drawings"                "Science 7 - Animal Project"    
+## [17] "Shellie Bridal Shower"          "Shellie Wedding"               
+## [19] "Stegosaurus Walk"               "Toren's 3rd birthday"
 ```
 
 # Putting the Lists by Year into a Convenient Format
@@ -111,7 +219,8 @@ To actually move the directories, I'd like to get a string of the directory name
 
 To do this I created a helper function that takes the contents of a character vector, put quotes around them, and then writes it out.
 
-```{r}
+
+```r
 format_dir_list <- function(x) {
   z <- NA
   for (i in 1:length(x)) {
@@ -122,7 +231,8 @@ format_dir_list <- function(x) {
 ```
 
 Here's the code to print out the lists of folder names. I didn't run it because again, there's soooo many folders. 
-```{r, eval = FALSE}
+
+```r
 for (i in 1:16) {
   cat("\n")
   print(names(folder_output)[i])
