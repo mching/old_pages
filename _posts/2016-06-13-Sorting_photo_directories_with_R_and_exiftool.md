@@ -5,7 +5,7 @@ title: Sorting photo directories with R and exiftool
 
 We were fans of Google's Picasa photo organization software, but when it was discontinued, I decided that I would like to transfer all my digital photos onto an external drive and then into Adobe Lightroom. To do so, however, my "research" told me that it would be best to group them into catalogs based on year, mainly because I have on the order of 10^5 photos.
 
-Right now I have my pictures organized into about 300-400 directories by event. I decided I wanted to organize all of my folders as directories within year directories. So all the 2016 folders would need to be sorted into a 2016 directory, all the 2015 folders would go into a 2015 directory, etc. I wanted it to look something like this:
+I had my pictures organized into about 300-400 directories by event. I decided I wanted to organize all of my folders as directories within year directories. So all the 2016 folders would need to be sorted into a 2016 directory, all the 2015 folders would go into a 2015 directory, etc. I wanted it to look something like this:
 
 ```
 -2016
@@ -18,20 +18,21 @@ Right now I have my pictures organized into about 300-400 directories by event. 
 --etc...
 ```
 
-The problem was most of the folders are titled things like "Kindergarten Graduation" or "Anacapa". Some of them had the date in them (Maui 2012), or I could remember the date (Our Wedding). But for about 350 of them, there was no date in the folder title, and to figure out when these pictures were from, I would have to manually look at each directory, check the date from the EXIF data, and then sort those into the proper folder. Even if it took 1 minute per folder, that would take me 6 hours. So I decided I could spend 6 hours doing this manually or 6 hours learning some way to automate it. 
+The problem was most of the folders were titled things like "Kindergarten Graduation" or "Anacapa". Some of them had the date in them (Maui 2012), or I could remember the date (Our Wedding). But for about 350 of them, there was no date in the folder title, and to figure out when these pictures were from, I would have to manually look at each directory, check the date from the EXIF data, and then sort those into the proper folder. Even if it took 1 minute per folder, that would take me 6 hours. I figured I could either spend 6 hours doing this manually or 6 hours learning some way to automate it. Of course, I chose the latter!
 
-# Exiftool to the Rescue! Automating Metadata Extraction
+# Exiftool to the Rescue! 
+## Automating Metadata Extraction
 A quick search online brought me to [`exiftool`](http://www.sno.phy.queensu.ca/~phil/exiftool/). This is a command line program that allows for reading and writing photo metadata. It has lots of awesome quotes on the webpage, and the one that sealed the deal was this one:
 
 > "... it is total f***ing gibberish to me." - [Reddit Linux Questions](https://www.reddit.com/r/linuxquestions/comments/2yiked/i_want_to_batch_extract_the_exif_datetime_from_10/)
 
-After some fooling around, I discovered that I could extract the date at the command line and send it to a .csv (in Mac OS X). Adding other EXIF attributes allows you to extract more data, but since I didn't really want anything else, I just pulled the filename and the DateTimeOriginal attributes.
+After some fooling around, I discovered that I could extract the date at the command line and send it to a .csv (in Mac OS X). Adding other EXIF attributes allows you to extract more data, but since I didn't really want anything else, I just pulled the `filename` and the `DateTimeOriginal` attributes.
 
 ```
 > exiftool -DateTimeOriginal -S -s -csv ./*/ > all_photos_dates.csv
 ```
 
-Sweet! Now that's something I can work with!
+Sweet! Now that was something I could work with!
 
 # Back to R: Cleaning and Formatting the Raw Data
 First, I needed to read in the data.
@@ -116,14 +117,13 @@ photos
 ```
 
 # Formatting the Date Column
-Ok, next thing we needed to do was to take care of that date column and put it into a form that R can work with. I used POSIXct because POSIXlt caused problems when trying to add it to the data frame. This is because POSIXlt is a list, and POSIXct represents the number of seconds since the beginning of 1970.
+The next thing I needed to do was to put the date column into a form that R could work with. I used POSIXct because POSIXlt caused problems when trying to add it to the data frame. The reason was because POSIXlt-class objects are lists, and POSIXct objects represens the number of seconds since the beginning of 1970.
 
 ```r
 photos$DateTimeOriginal <- as.POSIXct(strptime(photos$DateTimeOriginal, format = "%Y:%m:%d %H:%M:%S"))
 ```
 
-One of the problems with POSIXct is that it's not as easy to get the year out compared to POSIXlt. No problem, we can just temporarily convert to POSIXlt and add 1900 (the start date of POSIXlt years).
-
+One of the problems with POSIXct is that it's not as easy to get the year out compared to POSIXlt. No problem, I just temporarily converted to POSIXlt and add 1900 (the start date of POSIXlt years).
 
 ```r
 photos <- photos %>% mutate(year = as.POSIXlt(DateTimeOriginal)$year + 1900)
@@ -149,7 +149,7 @@ photos
 ```
 
 # Summarizing the Years in Each Folder
-Now we needed to figure out the best way to describe the year of each folder. I used the `Mode` function from [here](http://stackoverflow.com/questions/2547402/is-there-a-built-in-function-for-finding-the-mode) to find out what was the most common year in each folder.
+I needed now to figure out the best way to describe the year of each folder. I used the `Mode` function from [here](http://stackoverflow.com/questions/2547402/is-there-a-built-in-function-for-finding-the-mode) to find out what was the most common year in each folder.
 
 
 ```r
@@ -180,7 +180,7 @@ folder_years
 ## ..                     ...   ...
 ```
 
-Finally we needed to group the folders by year. To do this, I created an empty list then populated it based on the most common year of the photos in each folder.
+Finally I needed to group the folders by year. To do this, I created an empty list then populated it based on the most common year of the photos in each folder.
 
 
 ```r
@@ -240,11 +240,11 @@ for (i in 1:16) {
 }
 ```
 
-All I have to do now is to copy and paste each series of folder names into the OS X Terminal command `mv [pasted list of folders] [destination directory]` and I'll be done!
+All I had to do then was to copy and paste each series of folder names into the OS X Terminal command `mv [pasted list of folders] [destination directory]` and I was done!
 
 # Conclusion
 That took more than 6 hours to figure out, but I had fun learning and only a little frustration. I know I could probably create some bash script to do this same thing, but I don't know bash hardly at all, and anyway, I wanted to figure out how to do it in R. Good thing there's no Comments on this blog. I would be really sad if someone posted a really tiny bash script that could do this same thing!
 
-I think the lesson learned here is that if you have lots of photo folders, it's  best to have some kind of directory organization structure on the hard drive, rather than relying on Picasa or some other organization program to keep your folders in order. This way it will be easier to migrate to a new solution, and in theory, you know where things are even when you don't know exactly what the folder is called. If I were looking for a picture from the first day of my son's third grade year, I would know to look in 2014, and that would narrow the search down from all my folders to just the 2014 folders.
+I think the lesson learned here is that if you have lots of photo folders, it's best to have some kind of directory organization structure on the hard drive, rather than relying on Picasa or some other organization program to keep your folders in order. This way it will be easier to migrate to a new solution, and in theory, you know where things are even when you don't know exactly what the folder is called. If I were looking for a picture from the first day of my son's third grade year, I would know to look in 2014, and that would narrow the search down from all my folders to just the 2014 folders.
 
 Next step--I wonder what are some of the patterns in that date/time variable?
