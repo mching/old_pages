@@ -1,6 +1,7 @@
-# Reverse-In Parking in Hawaii and California
-Michael Ching  
-July 14, 2016  
+---
+layout: post
+title: Reverse-In Parking in Hawaii and California
+---
 
 ## Introduction
 
@@ -37,47 +38,8 @@ Here's the code for the analysis.
 
 ```r
 library(dplyr)
-```
-
-```
-## 
-## Attaching package: 'dplyr'
-```
-
-```
-## The following objects are masked from 'package:stats':
-## 
-##     filter, lag
-```
-
-```
-## The following objects are masked from 'package:base':
-## 
-##     intersect, setdiff, setequal, union
-```
-
-```r
 library(tidyr)
 library(epiR)
-```
-
-```
-## Loading required package: survival
-```
-
-```
-## Package epiR 0.9-77 is loaded
-```
-
-```
-## Type help(epi.about) for summary information
-```
-
-```
-## 
-```
-
-```r
 fileURL <- "https://mching.github.io/datasets/parking_data.csv"
 download.file(fileURL, destfile = "parking_data.csv", method = "curl")
 dat <- read.csv("parking_data.csv")
@@ -134,8 +96,8 @@ It wasn’t even close. The observed data support the hypothesis that Hawaii dri
 The reason for this behavior is unknown but there is much online speculation about it. The [Hawaii Driver Manual, page 64](https://hidot.hawaii.gov/highways/files/2015/11/mvso-HawaiiDrivers-Manual09.2015.pdf) recommends reversing in so that drivers can enter traffic in a forward direction. However, this appears to be mainly about entering a roadway rather than a parking lot lane.
 
 More on the controversy from the [Huffington Post](http://www.huffingtonpost.com/2015/03/17/reverse-parking-hawaii_n_6887760.html)
-And [Slate](http://www.slate.com/articles/life/transport/2011/02/youre_parking_wrong.html)
-And NPR ([a study done in China versus the USA](http://www.npr.org/2014/08/27/343623220/parking-behavior-may-reflect-economic-drive))
+and [Slate](http://www.slate.com/articles/life/transport/2011/02/youre_parking_wrong.html)
+and NPR ([a study done in China versus the USA](http://www.npr.org/2014/08/27/343623220/parking-behavior-may-reflect-economic-drive))
  
 Limitations of the study include the convenience sample. Clustering was not taken into account in the analysis. In addition, there may be other factors that affect the parking in specific areas such as the neighborhoods, retail mix, time of day, percentage of stalls filled, etc. While I tried to match the types of businesses, most of the Hawaii cars came from a nearly full, enclosed parking garage with one-way lanes, while the California lot was virtually empty. 
 
