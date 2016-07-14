@@ -3,8 +3,6 @@ layout: post
 title: Reverse-In Parking in Hawaii and California
 ---
 
-## Introduction
-
 One of my mainland-born friends is annoyed that Hawaii drivers like to reverse their cars into parking stalls much more than the mainland. My wife, who is also from the mainland, agreed with him enthusiastically. Whether this is appropriate parking behavior or not, I had never noticed it before, so I figured it was something I could test with some observations. I had a trip coming up to the mainland, and I was able to collect some data to test whether the Hawaii drivers were really so different than their California counterparts.
 
 ## Methods
@@ -38,8 +36,47 @@ Here's the code for the analysis.
 
 ```r
 library(dplyr)
+```
+
+```
+## 
+## Attaching package: 'dplyr'
+```
+
+```
+## The following objects are masked from 'package:stats':
+## 
+##     filter, lag
+```
+
+```
+## The following objects are masked from 'package:base':
+## 
+##     intersect, setdiff, setequal, union
+```
+
+```r
 library(tidyr)
 library(epiR)
+```
+
+```
+## Loading required package: survival
+```
+
+```
+## Package epiR 0.9-77 is loaded
+```
+
+```
+## Type help(epi.about) for summary information
+```
+
+```
+## 
+```
+
+```r
 fileURL <- "https://mching.github.io/datasets/parking_data.csv"
 download.file(fileURL, destfile = "parking_data.csv", method = "curl")
 dat <- read.csv("parking_data.csv")
