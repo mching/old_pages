@@ -1,11 +1,6 @@
----
-title: "Reverse-In Parking in Hawaii and California"
-author: "Michael Ching"
-date: "July 14, 2016"
-output:
-  html_document:
-    keep_md: true
----
+# Reverse-In Parking in Hawaii and California
+Michael Ching  
+July 14, 2016  
 
 ## Introduction
 
@@ -39,10 +34,50 @@ I obtained data on 172 vehicles in California and 197 vehicles in Hawaii. In Cal
 Vehicles in Hawaii were 3.3 (2.0-5.3) times more likely to be reversed in than in California. The two-sided p-value was less than 0.0001.
 
 Here's the code for the analysis.
-```{r}
+
+```r
 library(dplyr)
+```
+
+```
+## 
+## Attaching package: 'dplyr'
+```
+
+```
+## The following objects are masked from 'package:stats':
+## 
+##     filter, lag
+```
+
+```
+## The following objects are masked from 'package:base':
+## 
+##     intersect, setdiff, setequal, union
+```
+
+```r
 library(tidyr)
 library(epiR)
+```
+
+```
+## Loading required package: survival
+```
+
+```
+## Package epiR 0.9-77 is loaded
+```
+
+```
+## Type help(epi.about) for summary information
+```
+
+```
+## 
+```
+
+```r
 fileURL <- "https://mching.github.io/datasets/parking_data.csv"
 download.file(fileURL, destfile = "parking_data.csv", method = "curl")
 dat <- read.csv("parking_data.csv")
@@ -55,8 +90,41 @@ dat$Direction <- factor(dat$Direction, levels = c("Reverse_in", "Forward_in"))
 
 table1 <- table(dat$State, dat$Direction)
 table1
+```
 
+```
+##             
+##              Reverse_in Forward_in
+##   Hawaii             68        129
+##   California         18        154
+```
+
+```r
 epi.2by2(table1, method = "cross.sectional")
+```
+
+```
+##              Outcome +    Outcome -      Total        Prevalence *
+## Exposed +           68          129        197                34.5
+## Exposed -           18          154        172                10.5
+## Total               86          283        369                23.3
+##                  Odds
+## Exposed +       0.527
+## Exposed -       0.117
+## Total           0.304
+## 
+## Point estimates and 95 % CIs:
+## -------------------------------------------------------------------
+## Prevalence ratio                             3.30 (2.05, 5.32)
+## Odds ratio                                   4.51 (2.55, 7.97)
+## Attrib prevalence *                          24.05 (15.99, 32.12)
+## Attrib prevalence in population *            12.84 (6.55, 19.13)
+## Attrib fraction in exposed (%)              69.68 (51.12, 81.19)
+## Attrib fraction in population (%)           55.10 (34.26, 69.33)
+## -------------------------------------------------------------------
+##  X2 test statistic: 29.721 p-value: < 0.001
+##  Wald confidence limits
+##  * Outcomes per 100 population units
 ```
 
 
