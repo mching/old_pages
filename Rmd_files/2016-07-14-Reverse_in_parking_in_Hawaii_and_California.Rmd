@@ -55,6 +55,7 @@ dat$Direction <- factor(dat$Direction, levels = c("Reverse_in", "Forward_in"))
 
 table1 <- table(dat$State, dat$Direction)
 table1
+fisher.test(table1)
 
 epi.2by2(table1, method = "cross.sectional")
 ```
