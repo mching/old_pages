@@ -115,14 +115,14 @@ To do this I created a helper function that takes the contents of a character ve
 format_dir_list <- function(x) {
   z <- NA
   for (i in 1:length(x)) {
-    z[i] <- paste0("\'", x[i], "\'")
+    z[i] <- paste0("\"", x[i], "\"")
   }
   return(cat(z))
 }
 ```
 
 Here's the code to print out the lists of folder names. I didn't run it because again, there's soooo many folders. 
-```{r, eval = FALSE}
+```{r, eval = TRUE}
 for (i in 1:16) {
   cat("\n")
   print(names(folder_output)[i])
