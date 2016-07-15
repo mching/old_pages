@@ -3,11 +3,11 @@ layout: post
 title: Reverse-In Parking in Hawaii and California
 ---
 
-One of my mainland-born friends is annoyed that Hawaii drivers like to reverse their cars into parking stalls much more than the mainland. My wife, who is also from the mainland, agreed with him enthusiastically. Whether this is appropriate parking behavior or not, I had never noticed it before, so I figured it was something I could test with some observations. I had a trip coming up to the mainland, and I was able to collect some data to test whether the Hawaii drivers were really so different than their California counterparts.
+One of my mainland-born friends recently expressed to me how he was annoyed that Hawaii drivers like to reverse their cars into parking stalls more than drivers on the mainland. My wife, who is also from the mainland, agreed with him enthusiastically. Whether this is appropriate parking behavior or not, I had never noticed it before, so I figured it was something I could test with some observations. I had a trip coming up to the mainland, and I was able to collect some data to test whether the Hawaii drivers were really so different than their California counterparts.
 
 ## Methods
 
-I took photographs of parked vehicles in the parking lot of the [99 Ranch mall](https://www.google.com/maps/place/99+Ranch+Market/@33.8411535,-117.9435128,15z/data=!4m5!3m4!1s0x0:0x867c7acd905366a!8m2!3d33.8411535!4d-117.9435128) in Anaheim, California. This is a mixed use mall with a variety of restaurants and small retail and service businesses. The Hawaii comparison photographs were taken in [Koko Marina](https://www.google.com/maps/place/Koko+Marina+Center/@21.2780102,-157.707062,17z/data=!3m1!4b1!4m5!3m4!1s0x7c001265ac2c9e61:0xf24af58b58bfd296!8m2!3d21.2780052!4d-157.7048733) and the [Ward area parking structure](https://www.google.com/maps/place/Nordstrom+Rack+Ward+Village+Shops/@21.2938104,-157.8553068,17z/data=!4m12!1m6!3m5!1s0x7c006dfb62829bb5:0xaac1f817df7b6e43!2sWard+Village!8m2!3d21.2948051!4d-157.8560471!3m4!1s0x0:0x47553222252dff70!8m2!3d21.2933142!4d-157.8514713), which also has a variety of restaurants and retail businesses. 
+I took photographs of parked vehicles in the parking lot of the [99 Ranch mall](https://www.google.com/maps/place/99+Ranch+Market/@33.8411535,-117.9435128,15z/data=!4m5!3m4!1s0x0:0x867c7acd905366a!8m2!3d33.8411535!4d-117.9435128) in Anaheim, California. This is a mixed use mall with a variety of restaurants and small retail and service businesses. The comparison Hawaii photographs were taken in [Koko Marina](https://www.google.com/maps/place/Koko+Marina+Center/@21.2780102,-157.707062,17z/data=!3m1!4b1!4m5!3m4!1s0x7c001265ac2c9e61:0xf24af58b58bfd296!8m2!3d21.2780052!4d-157.7048733) and the [Ward area parking structure](https://www.google.com/maps/place/Nordstrom+Rack+Ward+Village+Shops/@21.2938104,-157.8553068,17z/data=!4m12!1m6!3m5!1s0x7c006dfb62829bb5:0xaac1f817df7b6e43!2sWard+Village!8m2!3d21.2948051!4d-157.8560471!3m4!1s0x0:0x47553222252dff70!8m2!3d21.2933142!4d-157.8514713), which also has a variety of restaurants and retail businesses. 
 
 I recorded how many vehicles were facing in and how many were facing out in each photograph. 
 
@@ -19,14 +19,6 @@ I analyzed the data using Fisher’s exact test, with a two sided probability. E
 
 ## Results
 Representative photos for the parking lots are in Figure 1.
-
-<figure>
-<a href="https://mching.github.io/images/anaheim99ranch.JPG"><img src="https://mching.github.io/images/anaheim99ranch.JPG" alt="Figure 1a. Anaheim 99 Ranch Parking Lot" height="120" width="160"></a>
-<a href="https://mching.github.io/images/KokoMarina.JPG"><img src="https://mching.github.io/images/KokoMarina.JPG" alt="Figure 1b. Koko Marina Parking Lot" height="120" width="160"></a>
-<a href="https://mching.github.io/images/Ward.JPG"><img src="https://mching.github.io/images/Ward.JPG" alt="Figure 1c. Ward Village Parking Lot" height="120" width="160"></a>
-<figcaption>Figure 1a: Anaheim 99 Ranch, 1b: Koko Marina, 1c: Ward Village</figcaption>
-</figure>
-<p>
 
 I obtained data on 172 vehicles in California and 197 vehicles in Hawaii. In California, 18/172 (10.4%, 95% confidence interval 6.6-16.0%) vehicles were reversed in. In Hawaii, 68/197 (34.5%, 95% CI 28.2-41.4%) vehicles were reversed in.
 
