@@ -38,18 +38,11 @@ dat <- read.csv("parking_data.csv")
 
 # Clean data. I had summarized each photo by number of cars facing out and facing in. These had to be put into a long form that R could work with, where each row is one observation
 dat <- tbl_df(dat)
-
-# Before
-dat
 dat <- dat %>% gather(Direction, n, Reverse_in:Forward_in)
-
-# After
 dat <- dat[rep(1:nrow(dat), dat$n), 1:3]
-dat
 
 dat$State <- factor(dat$State, levels = c("Hawaii", "California"))
 dat$Direction <- factor(dat$Direction, levels = c("Reverse_in", "Forward_in"))
-
 
 table1 <- table(dat$State, dat$Direction)
 table1
