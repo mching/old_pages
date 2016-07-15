@@ -56,6 +56,7 @@ table1
 ```
 
 Here's the summary of the observed parking behavior in Hawaii vs California.
+
 ```
 ##             
 ##              Reverse_in Forward_in
@@ -68,6 +69,7 @@ epi.2by2(table1, method = "cross.sectional")
 ```
 
 And here is the data analyzed as an epidemiologic cross sectional table. The exposure is Hawaii, and the outcome is reverse-in parking.
+
 ```
 ##              Outcome +    Outcome -      Total        Prevalence *
 ## Exposed +           68          129        197                34.5
