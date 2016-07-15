@@ -39,7 +39,7 @@ dat <- read.csv("parking_data.csv")
 # Clean data. I had summarized each photo by number of cars facing out and facing in. These had to be put into a long form that R could work with, where each row is one observation
 dat <- tbl_df(dat)
 
-# Before:
+# Before
 dat
 dat <- dat %>% gather(Direction, n, Reverse_in:Forward_in)
 
@@ -53,6 +53,24 @@ dat$Direction <- factor(dat$Direction, levels = c("Reverse_in", "Forward_in"))
 
 table1 <- table(dat$State, dat$Direction)
 table1
+```
+
+```r
+fisher.test(table1)
+```
+
+```
+## 
+## 	Fisher's Exact Test for Count Data
+## 
+## data:  table1
+## p-value = 3.357e-08
+## alternative hypothesis: true odds ratio is not equal to 1
+## 95 percent confidence interval:
+##  2.488736 8.458416
+## sample estimates:
+## odds ratio 
+##   4.492008
 ```
 
 Here's the summary of the observed parking behavior in Hawaii vs California.
