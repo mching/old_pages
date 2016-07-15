@@ -18,7 +18,7 @@ I estimated beforehand that the proportion of reversed-in cars in Hawaii and Cal
 I analyzed the data using Fisher’s exact test, with a two sided probability. Epidemiologic risk based estimates were calculated using the [`epiR`](https://cran.r-project.org/web/packages/epiR/epiR.pdf) package of R.
 
 ## Results
-Representative photos for the parking lots are in Figure 1.
+The following are links to representative photos: [Anaheim (California)](https://mching.github.io/images/anaheim99ranch.JPG), [Koko Marina](https://mching.github.io/images/KokoMarina.JPG) (Hawaii), and [Ward Village](https://mching.github.io/images/Ward.JPG) (Hawaii).
 
 I obtained data on 172 vehicles in California and 197 vehicles in Hawaii. In California, 18/172 (10.4%, 95% confidence interval 6.6-16.0%) vehicles were reversed in. In Hawaii, 68/197 (34.5%, 95% CI 28.2-41.4%) vehicles were reversed in.
 
@@ -28,61 +28,34 @@ Here's the code for the analysis.
 
 ```r
 library(dplyr)
-```
-
-```
-## 
-## Attaching package: 'dplyr'
-```
-
-```
-## The following objects are masked from 'package:stats':
-## 
-##     filter, lag
-```
-
-```
-## The following objects are masked from 'package:base':
-## 
-##     intersect, setdiff, setequal, union
-```
-
-```r
 library(tidyr)
 library(epiR)
-```
 
-```
-## Loading required package: survival
-```
-
-```
-## Package epiR 0.9-77 is loaded
-```
-
-```
-## Type help(epi.about) for summary information
-```
-
-```
-## 
-```
-
-```r
+# Load files
 fileURL <- "https://mching.github.io/datasets/parking_data.csv"
 download.file(fileURL, destfile = "parking_data.csv", method = "curl")
 dat <- read.csv("parking_data.csv")
+
+# Clean data. I had summarized each photo by number of cars facing out and facing in. These had to be put into a long form that R could work with, where each row is one observation
 dat <- tbl_df(dat)
+
+# Before:
+dat
 dat <- dat %>% gather(Direction, n, Reverse_in:Forward_in)
+
+# After
 dat <- dat[rep(1:nrow(dat), dat$n), 1:3]
+dat
 
 dat$State <- factor(dat$State, levels = c("Hawaii", "California"))
 dat$Direction <- factor(dat$Direction, levels = c("Reverse_in", "Forward_in"))
+
 
 table1 <- table(dat$State, dat$Direction)
 table1
 ```
 
+Here's the summary of the observed parking behavior in Hawaii vs California.
 ```
 ##             
 ##              Reverse_in Forward_in
@@ -94,6 +67,7 @@ table1
 epi.2by2(table1, method = "cross.sectional")
 ```
 
+And here is the data analyzed as an epidemiologic cross sectional table. The exposure is Hawaii, and the outcome is reverse-in parking.
 ```
 ##              Outcome +    Outcome -      Total        Prevalence *
 ## Exposed +           68          129        197                34.5
@@ -120,7 +94,7 @@ epi.2by2(table1, method = "cross.sectional")
 
 
 ## Discussion
-It wasn’t even close. The observed data support the hypothesis that Hawaii drivers like to reverse into stalls much more than California drivers. The effect size was dramatic, with more than 3 times more cars reversed in Hawaii than California. 
+It wasn’t even close. The observed data supported the hypothesis that Hawaii drivers like to reverse into stalls much more than California drivers. The effect size was dramatic, with more than 3 times more cars reversed in Hawaii than California. 
 
 The reason for this behavior is unknown but there is much online speculation about it. The [Hawaii Driver Manual, page 64](https://hidot.hawaii.gov/highways/files/2015/11/mvso-HawaiiDrivers-Manual09.2015.pdf) recommends reversing in so that drivers can enter traffic in a forward direction. However, this appears to be mainly about entering a roadway rather than a parking lot lane.
 
@@ -128,7 +102,7 @@ More on the controversy from the [Huffington Post](http://www.huffingtonpost.com
 and [Slate](http://www.slate.com/articles/life/transport/2011/02/youre_parking_wrong.html)
 and NPR ([a study done in China versus the USA](http://www.npr.org/2014/08/27/343623220/parking-behavior-may-reflect-economic-drive))
  
-Limitations of the study include the convenience sample. Clustering was not taken into account in the analysis. In addition, there may be other factors that affect the parking in specific areas such as the neighborhoods, retail mix, time of day, percentage of stalls filled, etc. While I tried to match the types of businesses, most of the Hawaii cars came from a nearly full, enclosed parking garage with one-way lanes, while the California lot was virtually empty. 
+Limitations of the study include the convenience sample. Clustering was not taken into account in the analysis. In addition, there may be other factors that affect the parking in specific areas such as the neighborhoods, retail mix, time of day, width of parking stalls, percentage of stalls filled, etc. While I tried to match the types of businesses, most of the Hawaii cars came from a nearly full, enclosed parking garage with one-way lanes, while the California lot was virtually empty. 
 
 Like this current study, any future work would be frivolous and gratuitous, but possibilities include collecting data from other parts of the mainland, limiting observations to cars parked up against a barrier (like a sidewalk or building), and matching more closely the stores and neighborhoods (i.e., comparing Safeway parking lots in suburban locations).
 
