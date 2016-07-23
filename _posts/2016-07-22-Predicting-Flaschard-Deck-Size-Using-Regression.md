@@ -4,7 +4,7 @@ title: Predicting Flashcard Deck Size Using Linear Regression
 ---
 I'm studying for my pediatric recertification board exam right now, and to help me remember things, I'm making flashcards as I read an exam study book. Lately, I've been wondering how many flashcards I will have by the time I reach the end of the book. 
 
-I average about 15 pages a day and about 45 flashcards a day, or 3 flashcards per page. The book itself is 849 pages long, with the real content starting on page 43. The rest before is just introductory material that I didn't make flashcards for. Based on this info, I should have $3*(849 - 43 + 1)$, or 2421, cards. 
+I average about 15 pages a day and about 45 flashcards a day, or 3 flashcards per page. The book itself is 849 pages long, with the real content starting on page 43. The rest before is just introductory material that I didn't make flashcards for. Based on this info, I should have $$3*(849 - 43 + 1)$$, or 2421, cards. 
 
 That's the most logical prediction, but I wondered what would happen if I used linear regression to try to predict my flashcard deck size.
 
