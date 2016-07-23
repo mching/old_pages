@@ -2,7 +2,9 @@
 title: "Predicting Flashcard Deck Size Using Linear Regression"
 author: "Michael Ching"
 date: "July 22, 2016"
-output: html_document
+output: 
+  html_document: 
+    keep_md: yes
 ---
 
 I'm studying for my pediatric recertification board exam right now, and to help me remember things, I'm making flashcards as I read an exam study book. Lately, I've been wondering how many flashcards I will have by the time I reach the end of the book. 
