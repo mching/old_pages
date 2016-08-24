@@ -1,6 +1,7 @@
-# How Late Can My Patient Be
-Michael Ching  
-August 14, 2016  
+---
+layout: post
+title: How Late Can My Patient Be
+---
 
 When a patient doesn't come to their developmental behavioral pediatrics appointment, it's bad for my employer, but it's an unexpected boon for me. Most of my patients seem to come early and only a few arrive later than 5-10 minutes past their appointment time. I wanted to know when I could start to give up on them and start doing something else. When would it be likely that a patient will no-show? For example, if a given amount of time would have passed since the appointment time, what would be the probability that the patient would still show up? I set out to investigate this with a couple of months of data from my appointments.
 
