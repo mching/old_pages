@@ -117,7 +117,7 @@ x$minutes_late <- as.numeric(x$minutes_late)
 ```
 
 ## Appointment Type and No Show Rate
-I had 169 appointments in the study period. Of tese, 133 (78.7%, 95% confidence interval 71.6-84.5%) were consults.
+I had 169 appointments in the study period. Of these, 133 (78.7%, 95% confidence interval 71.6-84.5%) were consults.
 
 ```r
 table(x$Appointment_type)
