@@ -20,21 +20,21 @@ Electricity prices and gas prices have a habit of changing fairly often, so I cr
 
 To determine what gas price would have to be to match a given electricity price, we use the equations for cost per mile for gas and cost per mile for electricity, and set them equal to each other.
 
-\\[gas\:cost\:per\:mile = \frac{gas\:price\:per\:gallon}{mpg}\\]
+$$gas\:cost\:per\:mile = \frac{gas\:price\:per\:gallon}{mpg}$$
 
-\\[electricity\:cost\:per\:mile = \frac{electricity\:price\:per\:kwh}{miles\:per\:kwh}\\]
+$$electricity\:cost\:per\:mile = \frac{electricity\:price\:per\:kwh}{miles\:per\:kwh}$$
 
 The break-even point is when the gas cost per mile equals the electricity cost per mile
 
-\\[\frac{gas\:price\:per\:gallon}{mpg} = \frac{electricity\:price\:per\:kwh}{miles\:per\:kwh}\\]
+$$\frac{gas\:price\:per\:gallon}{mpg} = \frac{electricity\:price\:per\:kwh}{miles\:per\:kwh}$$
 
 Solving for gas cost, we get:
 
-\\[gas\:price\:per\:gallon = \frac{electricity\:price\:per\:kwh}{miles\:per\:kwh} \times mpg\\]
+$$gas\:price\:per\:gallon = \frac{electricity\:price\:per\:kwh}{miles\:per\:kwh} \times mpg$$
 
 So if electricity costs $0.17 per kwh, then the break-even gas cost would be:
 
-\\[gas\:price\:per\:gallon = \frac{0.17}{4.8} \times 55 = 1.95\\]
+$$gas\:price\:per\:gallon = \frac{0.17}{4.8} \times 55 = 1.95$$
 
 We can plot this equation.
 
