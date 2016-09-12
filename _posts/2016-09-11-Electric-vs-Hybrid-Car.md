@@ -1,6 +1,7 @@
-# Gas vs Electric Car in Honolulu
-Michael Ching  
-September 11, 2016  
+---
+layout: post
+title: Cost of Energy to Operate Electric vs. Hybrid Car in Honolulu
+---
 
 Our family has an electric car (Nissan Leaf) and a hybrid (Toyota Prius), and we often have to choose which one we will take out on the weekend. I wondered which one was cheaper to operate and which one was better for the environment.
 
