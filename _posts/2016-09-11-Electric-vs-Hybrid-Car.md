@@ -1,6 +1,7 @@
 ---
+title: "Cost of Energy to Operate Electric vs. Hybrid Car in Honolulu"
+output: html_document
 layout: post
-title: Cost of Energy to Operate Electric vs. Hybrid Car in Honolulu
 ---
 
 Our family has an electric car (Nissan Leaf) and a hybrid (Toyota Prius), and we often have to choose which one we will take out on the weekend. I wondered which one was cheaper to operate and which one was better for the environment.
@@ -13,7 +14,7 @@ Based on these figures, the Leaf costs $0.35 per kwh divided by 4.8 miles per kw
 
 The Prius is a lot cheaper with these figures, assuming we get the electricity from the electric company. But what if we have another source for electricity?
 
-We have photovoltaic panels on our house, and they generate most of our electricity need. We spent about $15,000 out of pocket for the system after rebates, and it generates about 10-20 kwh per day. Let's just call it 12 kwh per day on average. The system is rated for 20 years, so I can break the costs down by the up front cost divided by the electricity generated over 20 years. After 20 years with the system, we could be expected to generate 12 * 365 * 20 or 8.76\times 10^{4} kwh. Ignoring the discount rate, that makes our cost per kwh $0.17. At that rate, the cost per mile for the electric car is $0.036. So with our photovoltaic panels, the Leaf is actually cheaper than the $0.045/mile for the Prius!
+We have photovoltaic panels on our house, and they generate most of our electricity need. We spent about $15,000 out of pocket for the system after rebates, and it generates about 10-20 kwh per day. Let's just call it 12 kwh per day on average. The system is rated for 20 years, so I can break the costs down by the up front cost divided by the electricity generated over 20 years. After 20 years with the system, we could be expected to generate 12 * 365 * 20 or \(8.76 \times 10^{4}\) kwh. Ignoring the discount rate, that makes our cost per kwh $0.17. At that rate, the cost per mile for the electric car is $0.036. So with our photovoltaic panels, the Leaf is actually cheaper than the $0.045/mile for the Prius!
 
 ### Nomogram for Electric vs Gasoline Car Energy Price
 Electricity prices and gas prices have a habit of changing fairly often, so I created a figure to help decide which car to take.
