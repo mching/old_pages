@@ -1,0 +1,186 @@
+---
+title: "How Late Can My Patient Be"
+author: "Michael Ching"
+date: "August 14, 2016"
+output: 
+  html_document: 
+    keep_md: yes
+---
+
+When a patient doesn't come to their developmental behavioral pediatrics appointment, it's bad for my employer, but it's an unexpected boon for me. Most of my patients seem to come early and only a few arrive later than 5-10 minutes past their appointment time. I wanted to know when I could start to give up on them and start doing something else. When would it be likely that a patient will no-show? For example, if a given amount of time would have passed since the appointment time, what would be the probability that the patient would still show up? I set out to investigate this with a couple of months of data from my appointments.
+
+# Methods
+This was a cross sectional study of all appointments to see me between May through July 2016. I collected the time and date of the appointment, the actual arrival time, whether the appointment was kept or not, and the appointment type (consult or follow-up). I calculated the difference between the appointment time and arrival time to determine how many minutes early or late patients showed up. If patients did not arrive by 5 pm, I set them as a no-show.
+
+I calculated means and medians of continuous data and percentages of categorical data. I generated various plots including a survival curve for illustration. Fisher exact test was used to determine if there were differences in no show rates by appointment type. I used the `r R.version.string` and the `dplyr`, `survival`, and `ggplot2` package for this analysis
+
+# Results
+The following is the code and results of the data analysis.
+
+## Loading and Data Munging
+First, I loaded the libraries and a helper function.
+```{r}
+library(dplyr)
+library(survival)
+library(ggplot2)
+
+proportion <- function(x) {
+  tmp <- table(x)
+  paste0(tmp[1], 
+         " (", 
+         round(100*prop.table(tmp)[1], 1),
+         "%, 95% confidence interval ",
+         round(prop.test(tmp)$conf.int[1]*100, 1),
+         "-",
+         round(prop.test(tmp)$conf.int[2]*100, 1),
+         "%)"
+         )
+}
+```
+
+I loaded the data.
+```{r}
+x <- read.csv("../data/lateness.csv", colClasses = "character")
+x <- tbl_df(x)
+```
+
+Here are the first 10 rows of the dataset.
+```{r}
+x
+```
+
+I formatted some of the character data into factors for later use.
+```{r}
+x$Outcome <- factor(x$Outcome)
+x$Appointment_type <- factor(x$Appointment_type)
+x$Clinic <- factor(x$Clinic)
+```
+
+R works with times in POSIX formats that specify both date and time. In this step, I combined both date and time to create POSIX compatible variables describing appointment time and arrival time. 
+```{r}
+x <- x%>% mutate(appointment_dt = paste(Date, Appointment_time),
+            arrival_dt = paste(Date, Arrival_time))
+x$appointment_dt <- as.POSIXct(x$appointment_dt, tz = "HST", format = "%m/%d/%Y %H:%M")
+x$arrival_dt <- as.POSIXct(x$arrival_dt, tz = "HST", format = "%m/%d/%Y %H:%M")
+```
+
+I was then able to create a variable for the difference between the appointment and arrival times. 
+```{r}
+x <- x %>% mutate(minutes_late = difftime(arrival_dt, appointment_dt, units = "mins"))
+```
+
+When you subtract two times from each other, R treats the result as a `difftime` class object with limited ability to do further calculations. I coerced this into a numeric variable to permit further calculations. 
+```{r}
+x$minutes_late <- as.numeric(x$minutes_late)
+```
+
+## Appointment Type and No Show Rate
+I had `r nrow(x)` appointments in the study period. Of tese, `r proportion(x$Appointment_type)` were consults.
+```{r}
+table(x$Appointment_type)
+```
+
+Of all appointment types, `r proportion(x$Outcome)` arrived to their appointments. The no-show rate was `r round(100*prop.table(table(x$Outcome))[2], 1)`%, 95% CI `r round(prop.test(table(x$Outcome)[2], nrow(x))$conf.int[1]*100, 1)`-`r round(prop.test(table(x$Outcome)[2], nrow(x))$conf.int[2]*100, 1)`%.
+```{r}
+table(x$Outcome)
+```
+
+I looked at the comparison of appointment types and no-shows. There was no statistically significant difference between no-shows by appointment type (Fisher exact test, p = `r round(fisher.test(table(x$Appointment_type, x$Outcome))$p, 2)`)
+```{r}
+table(x$Appointment_type, x$Outcome)
+```
+
+## Minutes Late to Appointment
+The distribution of the minutes late to the appointment is shown below. Negative minutes late correspond to patients who showed up early, while positive minutes late are the number of minutes past the appointment time that the patients arrived. I only looked at patients who actually came to their appointments for this figure. 
+
+```{r}
+kept_appts <- x %>% filter(Outcome == "kept")
+
+ggplot(kept_appts, aes(minutes_late)) + geom_histogram(binwidth = 10) + 
+  ggtitle("Minutes Late to Appointment") +
+  xlab("Minutes Late (negative minutes = early)")
+```
+
+A few patients arrived over an hour early for various reasons including travel from a neighbor island, miscommunication about appointment times, etc. Despite these rare outliers, the appointments appear to be normally distributed.
+
+I calculated summary statistics and relevant quantiles. Because of the outliers, the quantiles are a better reflection of the distribution.
+```{r}
+summary(kept_appts$minutes_late)
+quantile(kept_appts$minutes_late, probs = c(0.05, 0.1, 0.25, 0.5, 0.75, 0.9, 0.95))
+```
+
+Based on these results, the median check in time was `r median(kept_appts$minutes_late)` minutes compared to the appointment time. The 90th percentile for check-in time was `r quantile(kept_appts$minutes_late, 0.90)` minutes late.
+
+Another way of looking at this is that 50% of patients will arrive between `r -quantile(kept_appts$minutes_late, 0.75)` and `r -quantile(kept_appts$minutes_late, 0.25)` minutes before their appointment. Fully 90% of patients will arrive between `r -quantile(kept_appts$minutes_late, 0.05)` minutes before and `r quantile(kept_appts$minutes_late, 0.95)` minutes after their appointment time.
+
+## Appointment Time: the Early Patients
+I set up a new variable for whether a patient was early to help with describing these patients.
+```{r}
+x <- x %>% mutate(Early = minutes_late <= 0)
+```
+
+As noted above in the summary statistics, most patients were early. Out of the `r nrow(x)` patients, `r proportion(!x$Early)` arrived at or before their appointment time. There was no significant difference by appointment type (Fisher exact test, p = `r round(fisher.test(table(early = x$Early, Appointment_type = x$Appointment_type))$p, 2)`).
+
+```{r}
+table(early = x$Early, Appointment_type = x$Appointment_type)
+```
+
+## Survival Curve
+I created a censoring variable to help with the survival analysis.
+```{r}
+x <- x %>% mutate(kept = ifelse(Outcome == "kept", T, F))
+```
+
+Here's the survival curve.
+```{r}
+model_simple <- survfit(Surv(x$minutes_late, event = x$kept, type = "right")~1)
+plot(model_simple, xlab = "Minutes late", ylab = "Proportion", 
+     main = "Proportion of Individuals Who Have Not Arrived by Time")
+```
+
+## No Show Rate by Time
+The other way to look at this is the no show rate by time. That is, how does the no show rate go up with time? I wrote a helper function here to determine the empirical no show rate at a given time.
+```{r}
+no_show_rate <- function(t, dat = x) {
+  dat <- tbl_df(dat)
+  timedat <- dat %>% filter(dat$minutes_late > t)
+  if(nrow(timedat) == 0) {
+    return("No data after this time")
+  }
+  else {
+    return(list(time = t,
+                no_show_rate = sum(!timedat$kept)/length(timedat$kept),
+                lower_ci = prop.test(sum(timedat$kept), length(timedat$kept))$conf.int[1],
+                higher_ci = prop.test(sum(timedat$kept), length(timedat$kept))$conf.int[2]
+    ))
+  }
+}
+```
+
+
+This function allowed me to empirically estimate the no show rate across time. For example, the no show rate at time 0 (appointment time) was calculated below.
+
+```{r}
+no_show_rate(0)
+```
+
+I plotted the no show rate by time in the following figure.
+```{r}
+timespan <- -60:60
+nsr <- data.frame(t = timespan, noshowrate = unlist(sapply(timespan, no_show_rate)[2,]))
+nsr <- tbl_df(nsr)
+ggplot(nsr, aes(x = t, y = noshowrate)) + geom_point() +
+  ggtitle("No Show Rate by Time") + xlab("Minutes from Appointment") +
+  ylab("No Show Rate")
+```
+
+
+# Discussion
+As I initially suspected, patients are usually early to my appointments, with the median arrival being `r -median(kept_appts$minutes_late)` before their appointment time. By the time the appointment time had passed, only about half were likely to show up, about the same as flipping a coin. However, it was still possible for patients to show up late, and at 18 minutes, about 1 in 6 of those who had not come yet would still show up.
+
+One limitations of these data are that that my specialty is fairly unique. There may be a lower no show rate and a higher propensity to show up early given the level of concern of the family about their child's developmental or behavioral condition. My no show rate is in line with that of previously published data in my specialty.
+
+Another limitation is that the sample size was small to look at subgroups who may be more likely to be late. If we were able to predict those who are more likely to be late, we might be able to intervene to reduce our risk of no-show.
+
+# Conclusion
+The reason I embarked on this project was to determine when I could relax and start something that takes more than a few minutes to do while waiting for a patient. Based on the data, I feel comfortable saying that if a patient is late by 10 minutes, there is only about a 25% probability that they will show up. Or out of every 4 times I start working on something, I'll be interrupted only once. That feels about right for my comfort level!
