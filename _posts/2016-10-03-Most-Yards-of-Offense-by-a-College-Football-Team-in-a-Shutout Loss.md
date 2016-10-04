@@ -251,7 +251,7 @@ model1 <- lm(Score ~ TotalYds, data = dat_all)
 abline(model1, col = "red")
 ```
 
-![](shutout_files/figure-html/unnamed-chunk-11-1.png)<!-- -->
+![](https://github.com/mching/mching.github.io/raw/master/images/shutout1.png)<!-- -->
 
 There are a couple of obvious outliers there with > 2000 total yards of offense. Which ones are they?
 
@@ -276,7 +276,7 @@ model1 <- lm(Score ~ TotalYds, data = dat_all)
 abline(model1, col = "red")
 ```
 
-![](shutout_files/figure-html/unnamed-chunk-13-1.png)<!-- -->
+![](https://github.com/mching/mching.github.io/raw/master/images/shutout2.png)<!-- -->
 
 ```r
 summary(model1)
