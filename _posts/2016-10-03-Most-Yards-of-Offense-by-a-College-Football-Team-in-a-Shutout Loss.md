@@ -1,5 +1,9 @@
-# Most Yards of Offense by a College Football Team in a Shutout Loss
-Michael Ching  
+---
+layout: post
+title: Most Yards of Offense by a College Football Team in a Shutout Loss
+---
+
+This weekend the University of Hawaii football team travels to San Jose State for a Mountain West conference game. It marks the anniversary of a very unusual game the last time these two teams met in San Jose. On November 15, 2014, UH defeated SJSU 13-0 despite allowing 462 yards on defense. After that game I did an analysis of college football games in the last 14 years to see how unusual this was. I had intended to update the analysis but the data source seems to have ended in September 2014, and I wasn't able to find another freely available source for these kinds of data. So here's a replay of my analysis from that game.
 
 ## Introduction
 The purpose of this document is to explore the most yards in a shutout loss for a college football team. It was inspired after the University of Hawai\`i gave up 462 yards in shutting out San Jose State on November 15, 2014. I wanted to see if I could use the `dplyr` package to explore this question.
