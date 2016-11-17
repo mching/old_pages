@@ -1,0 +1,120 @@
+---
+title: "Scale Model of Solar System"
+author: "Michael Ching"
+date: "11/6/2016"
+output: html_document
+---
+
+One of my son's Cub Scouts "adventures" requires him to create a scale model of the solar system. We sketched the calculations on the back of a receipt over lunch. We started with the distance we figured that we would use (length of our street, 387 feet) and then calculated the distances to each planet based on this. I figured it would be neat to create a function in R that would return a table of the relative distances based on a given solar system diameter.
+
+Here are the relative distances from the sun for each planet.
+```{r}
+solar_system <- data.frame(
+  solar_object = c("Sun", "Mercury", "Venus", "Earth", "Mars", "Jupiter",
+                   "Saturn", "Uranus", "Neptune"),
+  distance_km = c(0, 57.9e6, 108.2e6, 149.6e6, 227.8e6, 778.3e6, 
+                  1427e6, 2871e6, 4497.1e6),
+  diam_km = c(1.392e6, 4878, 12104, 12756, 6787, 142792, 120660, 
+              51118, 48600)
+)
+solar_system
+```
+
+We can use some data manipulation from the `dplyr` package to calculate the new distance and diameters.
+
+```{r}
+library(dplyr)
+solar_system <- tbl_df(solar_system)
+model_total_distance <- 387 # feet
+actual_total_distance <- solar_system$distance_km[9]
+solar_system <- solar_system %>% 
+  mutate(model_distance = distance_km * model_total_distance /
+           actual_total_distance, 
+         model_diam = diam_km * model_total_distance /
+           actual_total_distance)
+solar_system
+```
+
+In this case the model distance and diameter retain the same units as the input model total distance, which is feet in this case. Converting to inches makes it a little easier to understand.
+
+```{r}
+solar_system %>% mutate(model_diam_inches = model_diam * 12)
+```
+
+We can put everything into a function for more automatic usage.
+
+```{r}
+solar_model <- function(distance) {
+  require(dplyr)
+  solar_system <- data.frame(
+    solar_object = c("Sun", "Mercury", "Venus", "Earth", "Mars", "Jupiter",
+                   "Saturn", "Uranus", "Neptune"),
+    distance_km = c(0, 57.9e6, 108.2e6, 149.6e6, 227.8e6, 778.3e6, 
+                  1427e6, 2871e6, 4497.1e6),
+    diam_km = c(1.392e6, 4878, 12104, 12756, 6787, 142792, 120660, 
+              51118, 48600)
+    )
+  solar_system <- tbl_df(solar_system)
+  model_total_distance <- distance
+  actual_total_distance <- solar_system$distance_km[9]
+  solar_system <- solar_system %>% 
+    mutate(model_distance = distance_km * model_total_distance /
+             actual_total_distance, 
+           model_diam = diam_km * model_total_distance /
+             actual_total_distance)
+  print(solar_system)
+}
+```
+
+Here's the model for 100 meters.
+```{r}
+solar_model(100)
+```
+
+We can see that the diameter for the planets is too small to really draw (Earth is 0.0002 m or 0.2 mm in diameter). 
+
+We can trial and error to see how much space we would need to make the Earth a decent size (like 5 mm). We can try 1000 m.
+
+```{r}
+solar_model(1000)
+```
+
+Still too small. That's only 2 mm. Let's try 2000 m.
+
+```{r}
+solar_model(2000)
+```
+
+With that, the Sun is 62 cm in diameter and the Earth is about 0.5 cm. That's at a scale of 2000 meters, or about 1.25 miles. Wow! 
+
+Interestingly enough we can also try to place the nearest star (other than the Sun) on our scale. Proxima Centauri is 4.246 light years away, and 1 light year is 9.461 x 10^12 kilometers. Its radius is 0.141 the radius of the sun (0.141 * 695,700 km).
+
+```{r}
+solar_model_PC <- function(distance) {
+  require(dplyr)
+  solar_system <- data.frame(
+    solar_object = c("Sun", "Mercury", "Venus", "Earth", "Mars", "Jupiter",
+                   "Saturn", "Uranus", "Neptune", "Proxima Centauri"),
+    distance_km = c(0, 57.9e6, 108.2e6, 149.6e6, 227.8e6, 778.3e6, 
+                  1427e6, 2871e6, 4497.1e6, 9.461e12*4.246),
+    diam_km = c(1.392e6, 4878, 12104, 12756, 6787, 142792, 120660, 
+              51118, 48600, 0.141*2*6.957e5)
+    )
+  solar_system <- tbl_df(solar_system)
+  model_total_distance <- distance
+  actual_total_distance <- solar_system$distance_km[9]
+  solar_system <- solar_system %>% 
+    mutate(model_distance = distance_km * model_total_distance /
+             actual_total_distance, 
+           model_diam = diam_km * model_total_distance /
+             actual_total_distance)
+  print(solar_system)
+}
+```
+
+After adding in the distance to Proxima Centauri and is diameter to the model, we can recalculate on a scale where the Sun to Neptune is 100 m.
+```{r}
+solar_model_PC(100)
+```
+
+So our nearest star turns out to be 890 kilometers away on this scale. Put another way, if we had this 100 meter model in Los Angeles, where the Earth is again 0.2 mm in size, the nearest star would be around Salt Lake City!
