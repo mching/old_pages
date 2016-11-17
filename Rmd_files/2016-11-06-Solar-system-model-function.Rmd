@@ -2,10 +2,12 @@
 title: "Scale Model of Solar System"
 author: "Michael Ching"
 date: "11/6/2016"
-output: html_document
+output: 
+  html_document: 
+    keep_md: yes
 ---
 
-One of my son's Cub Scouts "adventures" requires him to create a scale model of the solar system. We sketched the calculations on the back of a receipt over lunch. We started with the distance we figured that we would use (length of our street, 387 feet) and then calculated the distances to each planet based on this. I figured it would be neat to create a function in R that would return a table of the relative distances based on a given solar system diameter.
+One of my son's Cub Scouts "adventures" requires him to create a scale model of the solar system. We sketched the calculations on the back of a receipt over lunch. We started with the distance we figured that we would use (length of our street, 387 feet) and then calculated the distances to each planet based on this. I figured it would be neat to create a function in R that would return a table of the relative distances based on a given model solar system radius.
 
 Here are the relative distances from the sun for each planet.
 ```{r}
@@ -20,7 +22,7 @@ solar_system <- data.frame(
 solar_system
 ```
 
-We can use some data manipulation from the `dplyr` package to calculate the new distance and diameters.
+We can use some data manipulation from the `dplyr` package to calculate the new distance and diameters. I based the model solar system distance (radius) on my street length, which is approximately 387 feet.
 
 ```{r}
 library(dplyr)
@@ -33,12 +35,6 @@ solar_system <- solar_system %>%
          model_diam = diam_km * model_total_distance /
            actual_total_distance)
 solar_system
-```
-
-In this case the model distance and diameter retain the same units as the input model total distance, which is feet in this case. Converting to inches makes it a little easier to understand.
-
-```{r}
-solar_system %>% mutate(model_diam_inches = model_diam * 12)
 ```
 
 We can put everything into a function for more automatic usage.
