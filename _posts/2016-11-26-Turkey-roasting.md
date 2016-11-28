@@ -8,7 +8,7 @@ It's the day after Thanksgiving, and we have data on another turkey. This year o
 ## Methods
 Like last year, I took measurements of the probe thermomenter inserted into the deepest part of the breast. The birds were approximately the same size ~14 lbs. 
 
-The recipe I used both times was from the Alton Brown Good Eats Thanksgiving episode. I brined the thoroguhly defrosted turkey in ice cold conditions, then roasted it at 500 degrees Fahrenheit for 30 minutes. After this, I covered the breast with a double layer of heavy duty aluminum foil and dropped the temperature to 350 degrees. I then roasted the bird until the temperature of the breast had risen to 161 degrees.
+The recipe I used both times was from the Alton Brown Good Eats Thanksgiving episode. I brined the thoroughly defrosted turkey in ice cold conditions, then roasted it at 500 degrees Fahrenheit for 30 minutes. After this, I covered the breast with a double layer of heavy duty aluminum foil and dropped the temperature to 350 degrees. I then roasted the bird until the temperature of the breast had risen to 161 degrees.
 
 ## Results
 
@@ -69,5 +69,7 @@ ggplot(dat, aes(x=Time, y=Temp, color = factor(Year))) + geom_point() +
 
 It clearly took longer in 2016 than 2015, possibly because the bird started out about 8 degrees colder. This year's bird also stayed colder for longer than the prior year. The amount of time it took to reach the starting temperature (55 degrees) from 2015 was about 24 minutes. This was pretty similar to the difference in time to reach the final temperature (108 vs 126 minutes, a difference of 18 minutes). So the turkey caught up by 6 minutes in the convection oven. Six minutes over two hours is about 5 percent, so the difference really wasn't all that much by convection!
 
+The main limitation of this analysis is the small sample size. I only had one turkey these last two years, and it's possible that random factors could have affected the time it took to cook them. Regardless, for these two turkeys, it did not appear that the convection roasting reduced the cooking time.
+
 ## Conclusion
-Convection roasting on my mom's new oven doesn't make cooking a turkey appreciably faster than on my old oven.
+Convection roasting on my mom's new oven did not make cooking a turkey appreciably faster than on my old oven.
