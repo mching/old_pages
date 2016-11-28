@@ -15,4 +15,10 @@ package.json
 .Rhistory
 =======
 >>>>>>> 8b0af42b48b5bacc5fd504ba0bed8aa897635d2c
+<<<<<<< HEAD
 
+=======
+.Rhistory
+Rmd_files/*.png
+Rmd_files/*.md
+>>>>>>> 6ef5f4b7749e337fc1855071ad0cbdfd4e14d651
