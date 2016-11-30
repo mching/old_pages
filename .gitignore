@@ -11,5 +11,4 @@ package.json
 .Rhistory
 .Rproj.user
 *.html
-Rmd_files/*.png
 Rmd_files/*.md
