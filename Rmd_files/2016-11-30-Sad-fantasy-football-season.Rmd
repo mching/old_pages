@@ -73,6 +73,15 @@ table(sim_results)
 
 In this simulation, I won 4 or fewer games in `r sum(sim_results <= 4)` seasons, or `r sum(sim_results <= 4)/1000*100`% of seasons. So while finishing 4-8 was unlucky, it really wasn't that unusual.
 
+Here's a histogram of the distribution.
+```{r}
+library(ggplot2)
+ggplot(data.frame(sim_results), aes(x = sim_results)) + 
+  geom_histogram(binwidth=.5) +
+  xlab("wins") + ggtitle("Wins in 1000 Simulated Seasons")
+```
+
+
 ## Discussion
 I was unfortunate to win only 4 games this year, but this happened on average about 1 every 7.5 times the season simulation was run. It's not that different than rolling a die and having it come up with a 4. 
 
