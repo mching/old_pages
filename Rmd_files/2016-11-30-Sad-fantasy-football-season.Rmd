@@ -1,0 +1,64 @@
+# Run simulation of fantasy football season
+
+```{r}
+
+
+# My team
+avg1 <- 169.7
+sd1 <- 20.9
+df1 <- 10
+
+# Other team 1
+avg2 <- 168.2
+sd2 <- 26.1
+df2 <- 10
+
+# Other team 2
+
+rt(100, 8) * sd2 + avg2
+sd(rt(100, 8) * sd2 + avg2)
+
+game_sim <- function(ntrials, avg1, sd1, df1, avg2, sd2, df2) {
+  scores1 <- rt(ntrials, df1) * sd1 + avg1
+  scores2 <- rt(ntrials, df2) * sd2 + avg2
+  nwin <- (scores1 - scores2) > 0
+  return(sum(nwin))
+}
+
+game_sim(1, avg1, sd1, df1, avg2, sd2, df2)
+
+dat <- read.csv("datasets/scores.csv")
+
+library(dplyr)
+dat <- tbl_df(dat)
+
+score_lookup <- dat %>% group_by(Team) %>% summarize(score_avg = mean(Score), score_sd = sd(Score))
+dat %>% bind_cols(data.frame(game = rep(1:(nrow(dat)/2), each = 2)))
+
+team_to_lookup <- "ADG"
+team_lookup_row <- which(score_lookup$Team == team_to_lookup)
+team_avg <- score_lookup$score_avg[team_lookup_row]
+team_sd <- score_lookup$score_sd[team_lookup_row]
+rt(1, 11) * team_sd + team_avg
+
+schedule <- c("SPT", "CL", "SJSL", "SOTT", "Y", "MAX", "ADK", "SPT", "CL", "SJSL", "SOTT", "Y")
+
+rscore <- function(team_to_lookup) {
+  team_lookup_row <- which(score_lookup$Team == team_to_lookup)
+  team_avg <- score_lookup$score_avg[team_lookup_row]
+  team_sd <- score_lookup$score_sd[team_lookup_row]
+  return(rt(1, 11) * team_sd + team_avg)
+}
+
+season_sim <- function() {
+  sapply(schedule, rscore)
+  for(i in 1:12) ADGscores[i] <- rscore("ADG")
+  season_results <- ADGscores - sapply(schedule, rscore)
+  return(sum(season_results > 0))
+}
+season_sim()
+
+sim_results <- sapply(1:1000, function(x) season_sim())
+table(sim_results)
+hist(sim_results)
+```
