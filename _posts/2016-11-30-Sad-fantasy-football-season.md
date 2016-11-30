@@ -1,6 +1,7 @@
-# An Unlucky Fantasy Football Season Is Over
-Michael Ching  
-November 30, 2016  
+---
+title: "An Unlucky Fantasy Football Season Is Over"
+layout: post
+---
 
 The regular fantasy football season just finished, and as usual, my team  underperformed. I had the 3rd most points in the league and finished 7 out of 8 teams with a record of 4-8. I wondered what were the chances of such a bad record. This called for a simulation!
 
