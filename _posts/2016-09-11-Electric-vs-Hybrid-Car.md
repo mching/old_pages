@@ -64,3 +64,8 @@ If we add that extra $0.10 to the Leaf price, well now we have the Leaf costing 
 
 ### Cost Conclusion
 Taking all of the above into account, I would conclude the Prius cost to operate is significantly cheaper than the Leaf. I'm out of time today, but I'll come back to the environmental impact question.
+
+### Edit--November 30, 2016
+I discovered a neat report on electric vehicles in Hawaii. It's available for download at [this link](http://evtc.fsec.ucf.edu/publications/documents/HI-09-16.pdf). 
+
+I also discovered a cool link on the eGallon, which is defined as "the cost of fueling a vehicle with electricity compared to a similar vehicle that runs on gasoline." It's here on the [energy.gov website](http://energy.gov/maps/egallon). Basically the price of energy to run an electric vehicle is way cheaper everywhere in the USA except for Hawaii.
