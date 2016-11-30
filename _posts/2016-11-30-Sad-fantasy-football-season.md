@@ -146,4 +146,4 @@ Future work could be to go back and simulate every game of the season and find o
 I was unlucky to finish with the record that I had, but that's just fantasy football.
 
 ### Note
-If you think that no one should care about my fantasy team, I would agree with you. No one cares about anyone else's fantasy team. I hope the strategy of simulating a fantasy football season based on the scores might be of interest.
+If you think that no one should care about my fantasy team, I would agree with you. No one cares about anyone else's fantasy team. I hope the strategy of simulating a fantasy football season based on the scores might be of interest though. If it's not, no big deal. Keep on keeping on...
