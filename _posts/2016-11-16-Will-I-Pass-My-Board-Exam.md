@@ -37,3 +37,6 @@ sim <- rbinom(1e6, 200, 163/199)
 ```
 
 This converges pretty well to the actual calculated solution. My test is on 11/21/16 and I'll find out whether I pass a few days later... Here's hoping that this analysis isn't tempting fate!
+
+## Update--11/28/16
+I passed!
