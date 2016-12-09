@@ -83,4 +83,4 @@ pbinom(0, 150, 1/216, lower.tail = F)
 ```
 
 ### Conclusion:
-It's hard to roll three doubles in a roll on any one turn (1/216), but over the course of a game of 150 turns, it's likely that it will happen at least once (about 50%).
+It's hard to roll three doubles in a row on any one turn (1/216), but over the course of a game of 150 turns, it's likely that it will happen at least once (about 50%).
