@@ -1,0 +1,52 @@
+---
+title: "Pokemon Evolution Exploration"
+output: html_document
+---
+
+I was evolving some Pokemon in Pokemon Go today and wondered how much the Pokemon's attributes change after evolution. The attributes of interest are CP (combat power) and HP (hit points). I had evolved a lot of Pokemon already so I missed a chance to collect a lot of data, but here is some analysis from Pidgeys.
+
+Here's the dataset that I collected. It's available for viewing [here](https://docs.google.com/spreadsheets/d/1kzYLqVn0-sA0ffGscNco9QkkC_0bce22S7pafiUs0uE/edit?usp=sharing).
+
+```{r}
+library(dplyr)
+x <- read.csv("../datasets/evolution.csv")
+x <- tbl_df(x)
+pidgeys <- filter(x, pokemon == "Pidgey")
+pidgeys
+```
+
+Question 1: What is the relationship between CP before and CP after evolution?
+
+Here's the plot of what it looks like for Pidgeys.
+
+```{r}
+library(ggplot2)
+ggplot(pidgeys, aes(x = CP_pre, y = CP_post)) + geom_point(shape = 1)
+```
+
+First observation is that it looks like a line, but there is some random variation from the line. 
+
+Let's create a linear model. Here's the basic equation.
+
+$$ CP_{post} = multiplier \times CP_{pre} + intercept + \epsilon$$
+
+```{r}
+pidgey_model <- lm(CP_post ~ CP_pre, data = pidgeys)
+summary(pidgey_model)
+```
+
+Based on the data, the estimated multipler is 2.026 with a standard deviation of 0.055. However, there is the small negative intercept that you have to take off. So to predict what your CP will become you can plug your starting CP into this equation:
+
+$$ CP_{post} = 2.02558 \times CP_{pre} - 14.0352 + \epsilon$$
+
+Those numbers are close enough to 2 and -14 to guess that the Pokemon Go programmers used whole numbers in determining how much CP you get afterwards. 
+
+Note that there is theoretically a maximum CP for every Pokemon. I would assume that the CP_pre, when multipled, will never get more than the CP_post, which would imply that the maximum CP of a Pidgey will never be more than half the maximum CP of a Pidgeotto.
+
+Question 2: How does evolution affect HP?
+
+```{r}
+
+```
+
+Cross validation: https://www.openintro.org/stat/data/?data=pokemon
