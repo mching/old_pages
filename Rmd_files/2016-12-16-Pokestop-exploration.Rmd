@@ -4,3 +4,33 @@ author: "Michael Ching, MD, MPH"
 date: "December 16, 2016"
 output: html_document
 ---
+
+I sit at a Pokestop at work and I've been gathering data on what comes out each time I spin the disk. The questions that I had were: (1) are there differences between Pokestops in what you get? (2) do Pokestops change what they give over time? Here's some analysis looking at those questions.
+
+The dataset is available for viewing [here](https://docs.google.com/spreadsheets/d/1FmApMo7dwv9JI6qSVKWKGv9iQU23isrbbbcvn0TVsZw/edit?usp=sharing).
+```{r}
+library(dplyr)
+x <- read.csv("../datasets/pokestops.csv")
+x <- tbl_df(x)
+x
+```
+
+Because of how I entered the data, all the blank spaces were coerced into NAs. 
+```{r}
+NAto0 <- function(z) {
+  z[is.na(z)] <- 0
+  return(z)
+}
+
+for(v in 1:length(x)) {
+  x[v] <- NAto0(x[v])
+}
+
+x
+```
+
+
+```{r}
+
+```
+
