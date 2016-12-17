@@ -12,7 +12,8 @@ The dataset is available for viewing [here](https://docs.google.com/spreadsheets
 library(dplyr)
 x <- read.csv("../datasets/pokestops.csv")
 x <- tbl_df(x)
-x
+x <- x[-13] # remove Total column since this will make calculations easier
+str(x)
 ```
 
 Because of how I entered the data, all the blank spaces were coerced into NAs. 
@@ -31,6 +32,19 @@ x
 
 
 ```{r}
+summary(x)
+sapply(x[-c(1,2)], table)
+```
 
+```{r}
+item_totals <- summarize_each(x[-c(1:3)], funs(sum))
+item_totals/sum(item_totals)
+```
+
+```{r}
+x %>% select(-c(2:3)) %>% 
+  group_by(Date) %>% 
+  summarize_each(funs(sum)) # %>% 
+#  prop.table()
 ```
 
