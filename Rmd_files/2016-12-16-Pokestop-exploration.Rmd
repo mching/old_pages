@@ -13,10 +13,14 @@ library(dplyr)
 x <- read.csv("../datasets/pokestops.csv")
 x <- tbl_df(x)
 x <- x[-13] # remove Total column since this will make calculations easier
-str(x)
+
+# Format Date variable
+x$Date <- as.character(x$Date)
+x$Date <- paste0(x$Date, "/2016")
+x$Date <- as.Date(x$Date, "%m/%d/%Y")
 ```
 
-Because of how I entered the data, all the blank spaces were coerced into NAs. 
+Because of how I entered the data, all the blank spaces were coerced into NAs. I had to process these into 0s.
 ```{r}
 NAto0 <- function(z) {
   z[is.na(z)] <- 0
@@ -26,25 +30,46 @@ NAto0 <- function(z) {
 for(v in 1:length(x)) {
   x[v] <- NAto0(x[v])
 }
-
-x
 ```
 
+There were `r nrow(x)` spins with a total of `r sum(x[,-c(1:3)])` items received. 
 
+
+Here are the mean number of items received per throw. I would disregard the stats on Max Potions since I reached level 25 at the very end of the analysis.
 ```{r}
-summary(x)
-sapply(x[-c(1,2)], table)
+sapply(x[-c(1:3)], mean)
 ```
 
+Here is the overall frequency of what the Pokestops gave and the percentage breakdown.
 ```{r}
 item_totals <- summarize_each(x[-c(1:3)], funs(sum))
+item_totals
 item_totals/sum(item_totals)
 ```
 
 ```{r}
-x %>% select(-c(2:3)) %>% 
+x_by_date <- x %>% select(-c(2:3)) %>% 
   group_by(Date) %>% 
-  summarize_each(funs(sum)) # %>% 
-#  prop.table()
+  select(-1) %>%
+  summarize_each(funs(sum)) %>% 
+  ungroup()
+x_by_date
+p_by_date <- prop.table(as.matrix(x_by_date[,-1]), 1)
+p_by_date <- data.frame(p_by_date)
+p_by_date <- bind_cols(data.frame(spin_date = x_by_date$Date), p_by_date)
+
+```
+
+```{r}
+library(ggplot2)
+library(tidyr)
+
+item_names <- names(p_by_date)[-1] 
+p_by_date <- p_by_date %>% gather("item", "p", 2:10)
+p_by_date$item <- factor(p_by_date$item, levels = item_names)
+
+ggplot(p_by_date, aes(x = spin_date, y = p, color = item)) + geom_point() +
+  scale_color_brewer(palette = "Set3") + 
+  ggtitle("Daily Variation in Item Drop Rate")
 ```
 
