@@ -15,24 +15,25 @@ pidgeys <- filter(x, pokemon == "Pidgey")
 pidgeys
 ```
 
-Question 1: What is the relationship between CP before and CP after evolution?
+## Question 1: What is the relationship between CP before and CP after evolution?
 
 Here's the plot of what it looks like for Pidgeys.
 
 ```{r}
 library(ggplot2)
-ggplot(pidgeys, aes(x = CP_pre, y = CP_post)) + geom_point(shape = 1)
+ggplot(pidgeys, aes(x = CP_pre, y = CP_post)) + geom_point(shape = 1) + 
+  ggtitle("CP pre and post evolution")
 ```
 
-First observation is that it looks like a line, but there is some random variation from the line. 
+The first observation is that it looks like a line, but there is some random variation from the line. 
 
 Let's create a linear model. Here's the basic equation.
 
 $$ CP_{post} = multiplier \times CP_{pre} + intercept + \epsilon$$
 
 ```{r}
-pidgey_model <- lm(CP_post ~ CP_pre, data = pidgeys)
-summary(pidgey_model)
+pidgey_CP_model <- lm(CP_post ~ CP_pre, data = pidgeys)
+summary(pidgey_CP_model)
 ```
 
 Based on the data, the estimated multipler is 2.026 with a standard deviation of 0.055. However, there is the small negative intercept that you have to take off. So to predict what your CP will become you can plug your starting CP into this equation:
@@ -41,12 +42,39 @@ $$ CP_{post} = 2.02558 \times CP_{pre} - 14.0352 + \epsilon$$
 
 Those numbers are close enough to 2 and -14 to guess that the Pokemon Go programmers used whole numbers in determining how much CP you get afterwards. 
 
-Note that there is theoretically a maximum CP for every Pokemon. I would assume that the CP_pre, when multipled, will never get more than the CP_post, which would imply that the maximum CP of a Pidgey will never be more than half the maximum CP of a Pidgeotto.
+Note that there is theoretically a maximum CP for every Pokemon. I would assume that the CP of a Pidgey, when multipled by 2, will never be more than the maximum CP of a Pidgeotto.
 
-Question 2: How does evolution affect HP?
+There is also the question of what happens with Pidgey CPs of around 10 or so. If you plug 10 into the equation, you would get 20 - 14 = 6 CP for your Pidgeotto. This is lower than the starting Pidgey CP. I suspect that it is hard to find a Pidgey of only 10, and you probably wouldn't want to evolve that one anyway.
+
+## Question 2: How does evolution affect HP?
+
+Here's a plot of HP before and after evolution. 
+```{r}
+ggplot(pidgeys, aes(x = HP_pre, y = HP_post)) + geom_point(shape = 1) + 
+  ggtitle("HP pre and post evolution")
+```
+
+We can see that there is also a roughly linear relationship but it does not appear to be as linear as the CP before and after.
 
 ```{r}
-
+pidgey_HP_model <- lm(HP_post ~ HP_pre, data = pidgeys)
+summary(pidgey_HP_model)
 ```
+
+From these observations it looks like the model is:
+
+$$HP_{post} = 1.4324 \times HP_{pre} + 4.5598 + \epsilon$$
+
+## Question 3: Is there a relationship between CP and HP?
+```{r}
+ggplot(pidgeys, aes(x = HP_pre, y = CP_pre)) + geom_point(shape = 1) + 
+  ggtitle("CP vs HP, pre-evolution")
+```
+This again looks roughly linear but with a bit of noise.
+
+```{r}
+pidgeys %>% mutate(CP_HP_pre = CP_pre/HP_pre, CP_HP_post = CP_post/HP_post)
+```
+
 
 Cross validation: https://www.openintro.org/stat/data/?data=pokemon
