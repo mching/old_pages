@@ -85,10 +85,12 @@ Those numbers were close enough to 2 and -14 to speculate that the Pokemon Go pr
 
 There is a [maximum CP for Pokemon](http://pokemongohub.net/pokemon-go-max-cp-per-level-chart/), but this might suggest that there is also a minimum CP. If we assume that the programmers would not want the evolved form to have a lower CP than the original form, we could solve for the theoretical minimum CP of a Pidgey. 
 
-We set the $CP_{post}$ to be equal to the $CP_{pre}$ in the equation and solve for $CP_{pre}$. Ignoring $\epsilon$ for simplicity we get:
+We set the $$CP_{post}$$ to be equal to the $$CP_{pre}$$ in the equation and solve for $$CP_{pre}$$. Ignoring $$\epsilon$$ for simplicity we get:
 
 $$ CP_{pre} = 2.02558 \times CP_{pre} - 14.0352$$
+
 $$ -1.02558 \times CP_{pre} =  - 14.0352$$
+
 $$ CP_{pre} = 13.68513$$
 Since collecting the original data, I have caught more Pidgeys with lower CP (minimum 21). I will update the analysis once I've done their evolutions.
 
