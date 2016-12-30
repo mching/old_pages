@@ -1,0 +1,52 @@
+---
+title: "Untitled"
+author: "Michael Ching, MD, MPH"
+date: "December 29, 2016"
+output: html_document
+---
+
+In Hawaii, electric car owners get free parking at state owned parking lots. This is a big benefit when we travel since the airport parking lot is normally $18 per day. I wondered how much money the state loses on the electric car parking at the airport. Because I travel to Maui every week for work, I was able to collect some data to answer this question.
+
+## Methods
+I videotaped parked cars while driving through the parking structure between November 29, 2016 and December 28, 2016. I recorded the number of electric cars and total number of by watching the video. The data are available for viewing [here](https://docs.google.com/spreadsheets/d/1_k6RM5mQr2QJw2fuoNn_V8xkckfq59Nqh-xfWuOHA-Y/edit?usp=sharing).
+
+## Results
+```{r, echo=TRUE, message=FALSE}
+library(binom)
+library(epiR)
+```
+
+
+I observed 36 electric cars out of a total of 751 cars. This yielded a rate of `r round(binom.confint(36, 751, methods = "exact")$mean, 3)`. The 95% confidence interval is `r round(binom.confint(36, 751, methods = "exact")$lower, 3)` to `r round(binom.confint(36, 751, methods = "exact")$upper, 3)`.
+
+```{r}
+binom.confint(36, 751, methods = "exact")
+```
+
+This 4.8% is much higher than the reported number of electric cars registered in this state as of November 2016, approximately 0.29% ([source](https://energy.hawaii.gov/wp-content/uploads/2011/08/FF_Nov2016.pdf)). 
+
+This is unlikely to happen by chance. 
+```{r}
+binom.test(36, 751, p = 0.0029)
+```
+
+One possible explanation is that this is because people who are traveling have money to spend on electric cars. If you polled all travelers, I would suspect that the rate of electric car ownership is well above 0.29%. 
+
+Also there is an incentive to park at the airport if you have an electric car. Driving yourself and and parking for free is much more convenient than asking a friend or family member to drop you off and pick you up.
+
+It's hard to say how much money the state is losing on electric cars being parked at the airport because having an electric car probably makes it more likely that you would park at the airpot. Some of the electric car owners who are parked at the airport would have gotten dropped off (and not paid for parking).
+
+If we assume that maybe 80% of the electric car owners would have parked at the airport, we can see that the state loses (36 * 0.8) / (751 - 36 * 0.8) * $18, or $`r 36*0.8/(751-36*0.8) *18` per car parked at the airport per day. 
+
+There are 1570 stalls in the overseas garage, 1787 in the interisland garage, and 1800 in the international garage (parking data from [here](http://hawaii.gov/hnl/airport-parking/lot-d-main-terminal) and [here](http://hawaii.gov/hnl/airport-parking/lot-m-interisland-terminal)). 
+
+There seemed to be more electric cars parked in the last couple of weeks than before. On 12/20/16 and 12/27/16, 22 out of 254 (`r round(binom.confint(22, 254, methods = "exact")$mean, 3)`) cars were electric . The 3 weeks prior, I observed 14/497 (`r round(binom.confint(14, 497, methods = "exact")$mean, 3)`) electric cars.
+
+This discrepancy looked to be statistically significant so I did an analysis.
+
+```{r}
+
+epi.2by2(matrix(c(22, 14, 232, 483), nrow = 2), method = "cross.sectional")
+```
+
+There were 3.07 times as many electric cars parked in the last couple of weeks as before.
