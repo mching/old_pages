@@ -16,6 +16,7 @@ I estimated the overall prevalence of electric car parking and compared this to 
 library(binom)
 library(epiR)
 ```
+
 ### Overall Frequency of Electric Cars at the Airport
 I observed 36 electric cars out of a total of 751 cars. This yielded a prevalence rate of 0.048. The 95% confidence interval was 0.034 to 0.066.
 
@@ -29,7 +30,7 @@ binom.confint(36, 751, methods = "exact")
 ## 1  exact 36 751 0.04793609 0.03379636 0.06574896
 ```
 
-The electric car prevalence of 4.8% was significantly different than the reported number of electric cars registered in this state as of November 2016, approximately 0.29% of vehicles (p < 0.001) ([source](https://energy.hawaii.gov/wp-content/uploads/2011/08/FF_Nov2016.pdf)).  The ratio is 17 times the frequency of electric cars parked at the airport compared to the frequency of electric cars in the state.
+The electric car prevalence of 4.8% was significantly different than the reported number of electric cars registered in this state as of November 2016, approximately 0.29% of vehicles (p < 0.001) ([source](https://energy.hawaii.gov/wp-content/uploads/2011/08/FF_Nov2016.pdf)).  The ratio is 17 (95% c.i. 12-23) times the frequency of electric cars parked at the airport compared to the frequency of electric cars in the state.
 
 ```r
 binom.test(36, 751, p = 0.0029)
@@ -85,6 +86,7 @@ epi.2by2(matrix(c(22, 14, 232, 483), nrow = 2), method = "cross.sectional")
 
 
 ## Discussion
+
 ### Overall Electric Car Frequency
 One possible explanation for the increased frequency of electric cars at the airport is that people who are traveling have money to spend on electric cars. If you polled all travelers, I would suspect that the rate of electric car ownership is well above 0.29%. 
 
