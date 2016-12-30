@@ -87,7 +87,7 @@ epi.2by2(matrix(c(22, 14, 232, 483), nrow = 2), method = "cross.sectional")
 
 ## Discussion
 
-### Overall Electric Car Frequency
+### Factors Contributing to Higher Electric Car Frequency
 One possible explanation for the increased frequency of electric cars at the airport is that people who are traveling have money to spend on electric cars. If you polled all travelers, I would suspect that the rate of electric car ownership is well above 0.29%. 
 
 Another factor is the incentive to drive and park at the airport if you have an electric car. Driving yourself and and parking for free would be more convenient than asking a friend or family member to drop you off and pick you up. This also probably increases the rate of electric cars at the airport.
