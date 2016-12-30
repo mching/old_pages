@@ -1,52 +1,67 @@
 ---
-title: "Untitled"
+title: "Electric Vehicle Parking at Honolulu International Airport"
 author: "Michael Ching, MD, MPH"
 date: "December 29, 2016"
-output: html_document
+output: 
+  html_document:
+    keep_md: true
 ---
 
-In Hawaii, electric car owners get free parking at state owned parking lots. This is a big benefit when we travel since the airport parking lot is normally $18 per day. I wondered how much money the state loses on the electric car parking at the airport. Because I travel to Maui every week for work, I was able to collect some data to answer this question.
+In Hawaii, electric cars park for free at state owned parking lots. This is a big benefit when we travel since the airport parking lot is normally $18 per day. I wondered how much money the state loses on the electric car parking at the airport. Because I travel to Maui every week for work, I was able to collect some data to try to answer this question.
 
 ## Methods
-I videotaped parked cars while driving through the parking structure between November 29, 2016 and December 28, 2016. I recorded the number of electric cars and total number of by watching the video. The data are available for viewing [here](https://docs.google.com/spreadsheets/d/1_k6RM5mQr2QJw2fuoNn_V8xkckfq59Nqh-xfWuOHA-Y/edit?usp=sharing).
+I made video recordings of parked cars while driving through the Honolulu International Airport interisland parking structure between November 29, 2016 and December 28, 2016. I recorded the number of electric cars and total number of cars by watching the video and coding the vehicles. The data are available for viewing [here](https://docs.google.com/spreadsheets/d/1_k6RM5mQr2QJw2fuoNn_V8xkckfq59Nqh-xfWuOHA-Y/edit?usp=sharing).
+
+I estimated the overall prevalence of electric car parking and compared this to the prevalence of electric cars in Hawaii using an exact binomial test. I also noted a trend in the data possibly caused by winter vacation, and I analyzed the difference in rates before and during winter vacation using a chi square test.
 
 ## Results
 ```{r, echo=TRUE, message=FALSE}
 library(binom)
 library(epiR)
 ```
-
-
-I observed 36 electric cars out of a total of 751 cars. This yielded a rate of `r round(binom.confint(36, 751, methods = "exact")$mean, 3)`. The 95% confidence interval is `r round(binom.confint(36, 751, methods = "exact")$lower, 3)` to `r round(binom.confint(36, 751, methods = "exact")$upper, 3)`.
+### Overall Frequency of Electric Cars at the Airport
+I observed 36 electric cars out of a total of 751 cars. This yielded a prevalence rate of `r round(binom.confint(36, 751, methods = "exact")$mean, 3)`. The 95% confidence interval was `r round(binom.confint(36, 751, methods = "exact")$lower, 3)` to `r round(binom.confint(36, 751, methods = "exact")$upper, 3)`.
 
 ```{r}
 binom.confint(36, 751, methods = "exact")
 ```
 
-This 4.8% is much higher than the reported number of electric cars registered in this state as of November 2016, approximately 0.29% ([source](https://energy.hawaii.gov/wp-content/uploads/2011/08/FF_Nov2016.pdf)). 
-
-This is unlikely to happen by chance. 
+The electric car prevalence of 4.8% was significantly different than the reported number of electric cars registered in this state as of November 2016, approximately 0.29% of vehicles (p < 0.001) ([source](https://energy.hawaii.gov/wp-content/uploads/2011/08/FF_Nov2016.pdf)).  The ratio is `r round(binom.confint(36, 751, methods = "exact")$mean/0.0029, 0)` times the frequency of electric cars parked at the airport compared to the frequency of electric cars in the state.
 ```{r}
 binom.test(36, 751, p = 0.0029)
 ```
 
-One possible explanation is that this is because people who are traveling have money to spend on electric cars. If you polled all travelers, I would suspect that the rate of electric car ownership is well above 0.29%. 
+### Winter Vacation vs. Pre-winter Vacation Rates
 
-Also there is an incentive to park at the airport if you have an electric car. Driving yourself and and parking for free is much more convenient than asking a friend or family member to drop you off and pick you up.
-
-It's hard to say how much money the state is losing on electric cars being parked at the airport because having an electric car probably makes it more likely that you would park at the airpot. Some of the electric car owners who are parked at the airport would have gotten dropped off (and not paid for parking).
-
-If we assume that maybe 80% of the electric car owners would have parked at the airport, we can see that the state loses (36 * 0.8) / (751 - 36 * 0.8) * $18, or $`r 36*0.8/(751-36*0.8) *18` per car parked at the airport per day. 
-
-There are 1570 stalls in the overseas garage, 1787 in the interisland garage, and 1800 in the international garage (parking data from [here](http://hawaii.gov/hnl/airport-parking/lot-d-main-terminal) and [here](http://hawaii.gov/hnl/airport-parking/lot-m-interisland-terminal)). 
-
-There seemed to be more electric cars parked in the last couple of weeks than before. On 12/20/16 and 12/27/16, 22 out of 254 (`r round(binom.confint(22, 254, methods = "exact")$mean, 3)`) cars were electric . The 3 weeks prior, I observed 14/497 (`r round(binom.confint(14, 497, methods = "exact")$mean, 3)`) electric cars.
-
-This discrepancy looked to be statistically significant so I did an analysis.
+Because of the hypothesis that there were more electric cars parked over winter break, I compared the rates during the two weeks of winter break to the 3 weeks before. On 12/20/16 and 12/27/16, 22 out of 254 (`r round(binom.confint(22, 254, methods = "exact")$mean, 3)`) cars were electric. The 3 weeks prior, I observed 14/497 (`r round(binom.confint(14, 497, methods = "exact")$mean, 3)`) electric cars. This discrepancy was statistically significant. The prevalence ratio was 3.07 (p < 0.001, 95% confidence interval 1.60-5.91) comparing winter break to the weeks before break.
 
 ```{r}
 
 epi.2by2(matrix(c(22, 14, 232, 483), nrow = 2), method = "cross.sectional")
 ```
 
-There were 3.07 times as many electric cars parked in the last couple of weeks as before.
+
+## Discussion
+### Overall Electric Car Frequency
+One possible explanation for the increased frequency of electric cars at the airport is that people who are traveling have money to spend on electric cars. If you polled all travelers, I would suspect that the rate of electric car ownership is well above 0.29%. 
+
+Another factor is the incentive to drive and park at the airport if you have an electric car. Driving yourself and and parking for free would be more convenient than asking a friend or family member to drop you off and pick you up. This also probably increases the rate of electric cars at the airport.
+
+### Different Frequency in Winter Break
+There seemed to be more electric cars over the winter break, and this was borne out by the statistically significant prevalence ratio. The reason for this could be that there are more people doing leisure travel over the break. I generally drive my hybrid car to the airport for work since my employer pays for the fee. When we travel for leisure, I take the electric car to save the $18/day. 
+
+### Estimated Cost of Electric Cars Parked at Airport
+
+It is difficult to say how much money the state is losing on electric cars being parked at the airport because having an electric car probably makes it more likely that you would park at the airport. Some of the electric car owners who are parked at the airport would have gotten dropped off and not paid for parking if they did not have electric cars.
+
+If we assume that 80% of the electric car owners would have parked at the airport anyway, we can see that the state loses (36 * 0.8) / (751 - 36 * 0.8) * $18, or $`r round(36*0.8/(751-36*0.8) *18 * 100, 2)` per 100 cars parked at the airport per day. 
+
+There are 1570 stalls in the overseas garage, 1787 in the interisland garage, and 1800 in the international garage, for a total of 5157 parking spots (parking data from [here](http://hawaii.gov/hnl/airport-parking/lot-d-main-terminal) and [here](http://hawaii.gov/hnl/airport-parking/lot-m-interisland-terminal)). If we assume that on a busy weekend 90% of these are full (`r round(0.9 * 5157, 0)` spots), and 4.8% of them are filled by electric cars, we would have `r round(36/751 * .9 * 5157, 0)` electric cars at the airport. These cars would cost the state $`r round(18*36/751 * .9 * 5157, 2)` per day.
+
+These calculations rely heavily on the assumptions I made about the sensitivity of people driving electric cars to paying the parking fee at the airport. If we change the number to only 10% of electric car owners who would still park and pay if they did not have electric cars, we would find that the state would lose only $`r round(36*0.1/(751-36*0.1) *18 * 100, 2)` per 100 cars parked at the airport per day.
+
+### Future Opportunities
+One unanswered question is how much does electric car ownership cause people to choose to park at public (free) parking lots vs. private parking lots. There are no comparable private parking lots at the airport but there are similar private and public lots downtown. Having parked at city lots downtown, I would guess that the frequency is at least what I observed at the airport and possibly more because of the high cost of parking downtown. However, I don't have actual data to look at this, and honestly, the underlying question of how sensitive people are to parking prices has probably been answered.
+
+## Conclusion
+The percentage of cars parked at the airport that are electric is greater than the  percentage of electric cars in the state. This effect seems to be greater over the winter holiday. 
