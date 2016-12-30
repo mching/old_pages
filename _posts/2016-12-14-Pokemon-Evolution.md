@@ -92,6 +92,7 @@ $$ CP_{pre} = 2.02558 \times CP_{pre} - 14.0352$$
 $$ -1.02558 \times CP_{pre} =  - 14.0352$$
 
 $$ CP_{pre} = 13.68513$$
+
 Since collecting the original data, I have caught more Pidgeys with lower CP (minimum 21). I will update the analysis once I've done their evolutions.
 
 ## Question 2: How does evolution affect HP?
