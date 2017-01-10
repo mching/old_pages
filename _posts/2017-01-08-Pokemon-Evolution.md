@@ -1,6 +1,8 @@
-# Pidgey Evolution: Effects on Combat Power and Hit Points (Updated)
-Michael Ching  
-January 8, 2017  
+---
+layout: post
+title: Pidgey Evolution--Effects on Combat Power and Hit Points (Updated)
+---
+
 I was evolving some Pokemon in Pokemon Go and wondered how much the Pokemon's attributes change after evolution. The attributes of interest were combat power (CP) and hit points (HP). I focused my analysis from Pidgeys because I had the most data points for this species.
 
 I collected data from a couple of days' evolution, available for viewing [here](https://docs.google.com/spreadsheets/d/1kzYLqVn0-sA0ffGscNco9QkkC_0bce22S7pafiUs0uE/edit?usp=sharing). Both times I was using a Lucky Egg.
@@ -251,6 +253,7 @@ plot(pidgey_sqrtCP_HP_model)
 Here's the model in equation form:
 
 $$HP = 3.04 \times \sqrt{CP} - 0.017 + \epsilon$$
+
 Those numbers were so close to round numbers that we could say:
 
 $$HP \approx 3 \times \sqrt{CP}$$
