@@ -63,12 +63,14 @@ $$HP_{post} = 1.539 \times HP_{pre} -0.120 + \epsilon$$
 This model explained >99% of the variance in HP after evolution. 
 
 ## Question 3: What is the relationship between CP and HP?
+I plotted the relationship between CP and HP for Pidgeys.
+
 ```{r}
 ggplot(pidgeys, aes(x = CP_pre, y = HP_pre)) + geom_point(shape = 1) + 
   ggtitle("Pidgey CP and HP Relationship")
 ```
 
-This does not look like a linear relationship at all. I tried to fit several models. First we tried the linear one as a baseline. This was actually pretty good, although the diagnostics don't look great.
+This did not look like a linear relationship at all. I tried to fit several models. First we tried the linear one as a baseline. This was actually pretty good, although the diagnostics don't look great.
 
 ```{r}
 pidgey_CP_HP_model <- lm(HP_pre ~ CP_pre, data = pidgeys)
@@ -83,7 +85,7 @@ summary(pidgey_logCP_HP_model)
 plot(pidgey_logCP_HP_model)
 ```
 
-I then tried a square root model. The R squared was much better, and the diagnostics look fantastic.
+I then tried a square root model. The R squared was much better, and the diagnostics looked better.
 ```{r}
 pidgey_sqrtCP_HP_model <- lm(HP_pre ~ I(CP_pre^(0.5)), data = pidgeys)
 summary(pidgey_sqrtCP_HP_model)
@@ -91,7 +93,11 @@ plot(pidgey_sqrtCP_HP_model)
 ```
 
 Here's the model in equation form:
+
 $$HP = 3.04 \times \sqrt{CP} - 0.017 + \epsilon$$
+Those numbers were so close to round numbers that we could say:
+
+$$HP \approx 3 \times \sqrt{CP}$$
 
 ## Discussion
 There appears to be a linear relationship between pre and post evolution CP and pre and post evolution HP. The relationship between CP and HP appears to be exponential. 
