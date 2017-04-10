@@ -7,7 +7,7 @@ output: html_document
 library(dplyr)
 library(tidyr)
 library(ggplot2)
-sprouts <- read.csv("./datasets/respiration.csv")
+sprouts <- read.csv("../datasets/respiration.csv")
 str(sprouts)
 sprouts <- tbl_df(sprouts)
 sprouts
@@ -30,11 +30,11 @@ ggplot(plot_data, aes(x=minutes, y = avg_dist, color = Age, group = Age)) +
                 width=.1, position=pd) + 
   geom_point(position=pd) +
   ylab("distance (mm)") +
-  geom_line()
+  # geom_line() + 
+  expand_limits(x = 0, y = 0)
 ```
 
 ```{r}
-sprouts
 model1 <- lm(distance ~ minutes + Age + minutes * Age, data = sprouts)
 summary(model1)
 ```
