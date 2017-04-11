@@ -3,39 +3,78 @@ title: "Respiration in Old vs Young Bean Sprouts"
 output: html_document
 ---
 
+My wife's high school biology students did a lab recently and had difficulty graphing the pooled data. One student allegedly took 2 hours to figure out how to do this in Excel. This seemed like it would be a nice exercise to try in the [Hadleyverse](http://adolfoalvarez.cl/the-hitchhikers-guide-to-the-hadleyverse/). To replicate this plot, I had to take her students' [data in wide form](https://docs.google.com/spreadsheets/d/1OTymer6lutVLNgZMhOq_LamKwXJpl41nAYSJ7MOC9f0/edit?usp=sharing), tidy it up, calculate means for each group and time, and then plot these. 
+
+## Experiment Setup
+The students had bean sprouts in a closed test tube. The tube was connected by an air-filled tube to a horizontal capillary tube with water inside. As the sprouts underwent cellular respiration, the water level in the capillary moved. The distance moved allegedly correlates with the amount of respiration that the sprouts underwent. The students compared the rate of respiration in "Young" and "Old" mung bean sprouts.
+
+## Analysis Plan
+I used the `dplyr`, `tidyr`, and `ggplot2` packages for this analysis.
 ```{r}
 library(dplyr)
 library(tidyr)
 library(ggplot2)
+```
+
+I imported the data and gathered them into long form.
+```{r}
 sprouts <- read.csv("../datasets/respiration.csv")
-str(sprouts)
 sprouts <- tbl_df(sprouts)
-sprouts
 sprouts <- gather(sprouts, "minutes", "distance", 4:7)
 sprouts$minutes <- recode(sprouts$minutes, "X5.min" = 5, "X10.min" = 10,
        "X15.min" = 15, "X20.min" = 20)
+sprouts
+```
 
+I calculated means and standard errors by time and age.
+```{r}
 plot_data <- sprouts %>% group_by(minutes, Age) %>% 
   summarize(avg_dist = mean(distance, na.rm = T), 
             se_dist = sd(distance, na.rm = T)/sqrt(sum(!is.na(distance))))
 
+plot_data
 ```
 
+### Data Visualization
+I plotted the mean and standard errors using `ggplot2`.
 ```{r}
-plot_data
-
 pd <- position_dodge(0)
 ggplot(plot_data, aes(x=minutes, y = avg_dist, color = Age, group = Age)) +
   geom_errorbar(aes(ymin=avg_dist-se_dist, ymax=avg_dist+se_dist), 
                 width=.1, position=pd) + 
   geom_point(position=pd) +
   ylab("distance (mm)") +
-  # geom_line() + 
-  expand_limits(x = 0, y = 0)
+  expand_limits(x = 0, y = 0) # to show the origin
 ```
+
+The result was a strikingly linear relationship between distance and time for both age groups. 
+
+### Model of Age Effect on Respiration Rate
+To fit a model to these, I used linear regression. I modeled this using an interaction of time and age.
 
 ```{r}
 model1 <- lm(distance ~ minutes + Age + minutes * Age, data = sprouts)
 summary(model1)
+```
+
+The model came out pretty nice! Here it is in algebraic form where $a$ is age (young corresponds to a = 1 and old corresponds to a = 0) and $t$ is time elapsed in minutes:
+
+$$distance = 4.2 + 7t + 10.9a + 5.2ta$$
+
+When Age = 0 (old sprouts), the equation changes to:
+
+$$distance_{old \space sprouts} = 4.2 + 7t $$
+
+When Age = 1 (young sprouts), the equation changes to:
+
+$$distance_{young \space sprouts} = 15.1 + 12.2t$$
+
+The model only explained about 50% of the variance as seen when we overlay the regression lines over the raw data.
+
+
+```{r}
+# Have to position dodge these points and superimpose lm lines on them
+ggplot(sprouts, aes(x=minutes, y=distance, color=Age)) +
+  geom_point(shape = 1, position=position_jitter(width=.5,height=0))
 ```
 
