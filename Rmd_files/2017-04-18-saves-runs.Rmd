@@ -1,0 +1,119 @@
+---
+title: "Saves and Runs Scored"
+output: html_document
+---
+
+From listening to my baseball podcast it seems that there is a belief that teams that score lots of runs are not likely to produce saves. The idea seems to be that such teams would blow out their competitors and so have less opportunity for games to be saved. While it made sense, I wondered what the data said.
+
+```{r}
+library(dplyr)
+library(ggplot2)
+library(Lahman)
+data("Teams")
+Teams <- tbl_df(Teams)
+```
+
+## Exploration of Saves over Time
+Saves did not become an official statistic until 1969 ([source](https://archive.is/20120708042304/http://findarticles.com/p/articles/mi_m0FCI/is_5_61/ai_84542687)). How have they evolved over the years? To figure this out, I decided to calculate the saves/team over that time frame.
+
+```{r}
+Teams <- filter(Teams, yearID > 1968) %>% 
+  select(yearID, lgID, teamID, franchID, G, R, W, L, RA, CG, SV) 
+
+SV_per_team <- Teams %>% 
+  group_by(yearID) %>%
+  summarize(totalSV = sum(SV)/length(teamID)) 
+
+ggplot(SV_per_team, aes(x = yearID, y = totalSV)) + 
+  geom_point() + 
+  expand_limits(y = 0) +
+  ggtitle("Saves per Team 1969-2015") +
+  xlab("year") +
+  ylab("Saves per team")
+
+```
+Looking at the graph, it seemed that saves rose from 1969 to 1990 and have been stable since then. There were some outliers in this trend, most notably 1981 and 1994 when there were less than 30 saves per team that year. After searching for the reason for this, it looks like this is because of the strikes those years. I remembered [the 1994 one](https://www.usatoday.com/story/sports/mlb/2014/08/11/1994-mlb-strike/13912279/) but had to look up [the 1981 one](https://en.wikipedia.org/wiki/1981_Major_League_Baseball_strike).
+
+To adjust for these work stoppages, I redrew the graph with rate of saves per team per 162 games.
+
+```{r}
+Teams %>% 
+  group_by(yearID) %>%
+  summarize(totalSV = sum(SV)/length(teamID)/sum(G)*162*length(teamID)) %>%
+  ggplot(aes(x = yearID, y = totalSV)) + 
+  geom_point() + 
+  expand_limits(y = 0) +
+  ggtitle("Saves per Team per 162 games 1969-2015") +
+  xlab("year") +
+  ylab("Saves per team")
+```
+That looked much better!
+
+## Runs since 1969
+Since I'm going to be looking at runs, I also decided to see if there was any trend in runs scored over that time period.
+
+```{r}
+Teams %>% group_by(yearID) %>% summarize(R_avg = sum(R)/sum(G)) %>%
+  ggplot(aes(x = yearID, y = R_avg)) + geom_point() +
+  expand_limits(y = 0) +
+  ylab("Average Runs per Team per Game") +
+  xlab("Year") +
+  ggtitle("Average Runs per Team per Game, 1969-2015")
+```
+
+While there is a declining trend in runs over the last 10 years, it's possible that this is actually a correction as it became more difficult to use performance enhancing drugs in baseball. In any case, this seemed close enough for use in the analysis.
+
+## Association between Runs Scored and Saves
+I decided to confine the analysis to 1990 and beyond. This seems to be a period of modern closer usage that resulted in a fairly stable save total from year to year.
+
+First question then was what is the relationship between runs scored and saves. A graph to start.
+
+```{r}
+filter(Teams, yearID > 1989) %>%
+  ggplot(aes(x = R, y = SV)) + geom_point(shape = 1) + geom_smooth(method = lm) +
+  expand_limits(y = 0)
+```
+
+The data are scattered but there does seem to be a statistically significant association between runs scored and saves (albeit in the opposite direction as hypothesized). Teams scoring more runs also have higher saves totals. I thought about this a bit, but then realized that teams scoring more runs are also more likely to win games, which is a prerequisite for a save. No win, no save!
+
+## Association between Saves per Win and Runs Scored
+I thought maybe saves per win would adjust for this.
+
+```{r}
+filter(Teams, yearID > 1989) %>% mutate(SV_per_win = SV/W) %>% 
+  ggplot(aes(x = R, y = SV_per_win)) + geom_point(shape = 1) + geom_smooth(method = lm) +
+  expand_limits(y = 0)
+```
+
+It turns out that this is better. Teams with more runs have fewer saves per win. The difference is fiarly small though, with teams scoring double the runs (1000 vs 500) only have about 0.13 fewer saves per win. On a putative 81 win team, this is a difference of at most 10 saves over the season.
+
+Here's the actual linear regression model.
+
+```{r}
+Teams <- filter(Teams, yearID > 1989) %>% mutate(SV_per_win = SV/W)
+model1 <- lm(SV_per_win ~ R, dat = Teams)
+summary(model1)
+```
+
+This model suggests that for each additional 100 runs scored over the season, the team would be expected to have -0.0268 saves/win
+
+## Multiple Regression
+The model wasn't that great at predicting save totals so I thought I might try my hand at a better model.
+
+First Wins alone...
+```{r}
+model2 <- lm(SV ~ W, dat = Teams)
+summary(model2)
+```
+
+Add in the runs.
+```{r}
+model3 <- lm(SV ~ W + R, dat = Teams)
+summary(model3)
+```
+How about complete games and runs against?
+
+```{r}
+model4 <- lm(SV ~ W + R + CG + RA, dat = Teams)
+summary(model4)
+```
