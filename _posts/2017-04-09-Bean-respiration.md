@@ -144,7 +144,7 @@ summary(model1)
 ## F-statistic: 163.2 on 3 and 449 DF,  p-value: < 2.2e-16
 ```
 
-The model came out pretty nice! Here it is in algebraic form where $a$ is age (young corresponds to a = 1 and old corresponds to a = 0) and $t$ is time elapsed in minutes:
+The model came out pretty nice! Here it is in algebraic form where a is age (young corresponds to $a = 1$ and old corresponds to $a = 0$) and t is time elapsed in minutes:
 
 $$distance = 4.2 + 7t + 10.9a + 5.2ta$$
 
