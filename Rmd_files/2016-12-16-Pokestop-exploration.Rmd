@@ -34,7 +34,6 @@ for(v in 1:length(x)) {
 
 There were `r nrow(x)` spins with a total of `r sum(x[,-c(1:3)])` items received. 
 
-
 Here are the mean number of items received per throw. I would disregard the stats on Max Potions since I reached level 25 at the very end of the analysis.
 ```{r}
 sapply(x[-c(1:3)], mean)
@@ -43,9 +42,45 @@ sapply(x[-c(1:3)], mean)
 Here is the overall frequency of what the Pokestops gave and the percentage breakdown.
 ```{r}
 item_totals <- summarize_each(x[-c(1:3)], funs(sum))
-item_totals
-item_totals/sum(item_totals)
+glimpse(item_totals)
+glimpse(round(item_totals/sum(item_totals), 3))
 ```
+
+The Mapunapuna Garden Relief Pokestop had the most data. I compared it to the other Pokestops I visited. There wasn't an obvious difference between the two sites on any of the attributes.
+```{r}
+n_by_pokestop <- x %>% group_by(PokeStop) %>% select(-c(1:3)) %>% 
+  summarize_each(funs(sum)) %>% ungroup()
+t(n_by_pokestop)
+
+# Percentages
+p_MAP <- n_by_pokestop[1,-1]/sum(n_by_pokestop[1,-1]) # Mapunapuna
+p_OTHER <- n_by_pokestop[2,-1]/sum(n_by_pokestop[2,-1]) # Other
+
+round(data.frame(MAP = t(p_MAP), OTHER = t(p_OTHER)), 3)
+```
+
+We could compare the proportion for the two groups for each item, but in reality what I was most interested in was the Pokeball drop rates.  
+
+```{r}
+sum(n_by_pokestop[1,-1]) # number of MAP drops
+sum(n_by_pokestop[2,-1]) # number of other drops
+```
+
+```{r}
+n_pokeball <- x %>% select(c(PokeStop, PokeBall)) %>% group_by(PokeStop) %>%
+  summarize_all(funs(sum))
+```
+
+```{r}
+n_pokeball[2, 2]
+n_pokeball_table <- matrix(c(n_pokeball[1, 2], n_pokeball[2, 2], 
+  sum(n_by_pokestop[1,-1]) - n_pokeball[1, 2],
+  sum(n_by_pokestop[2,-1]) - n_pokeball[2, 2]),
+  nrow = 2)
+prop.test(x = n_pokeball_table)
+str(n_pokeball_table)
+```
+
 
 ```{r}
 x_by_date <- x %>% select(-c(2:3)) %>% 
