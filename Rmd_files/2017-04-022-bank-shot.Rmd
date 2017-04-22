@@ -1,0 +1,54 @@
+---
+title: "Bank Shot Stats"
+output: html_notebook
+---
+
+There's a game at the Iolani Fair called Bank Shot. You have to roll a ball on a ramp into a hole and win a prize. Get it in the green hole and you win tickets, and if you get it in the red hole, you win a big inflatable prize. At one point we were giving out prizes like crazy and I wondered what was the rate of hitting the red and green holes.
+
+Here's a schematic of the game. The whole board is tilted up at the far end so that the ball will always roll towards the holes.
+
+```
+_________________
+|  /         \  |
+|/             \|
+|       |       |
+|       |       |
+|       |       |
+|       |       |
+|       |       |
+|       |       |
+|       |       |
+|       |       |
+|       |       |
+| G   G |       |
+|       |       |
+|   R   |       |  R = red hole
+|       |       |  G = green hole
+| G   G |   o   |  o = ball
+|_______________|
+
+Player stands here
+```
+
+```{r}
+library(tidyverse)
+library(binom)
+x <- read.csv("./datasets/bankshot.txt", sep = " ", colClasses = "character", header = F)
+x <- tbl_df(x)
+x$V2 <- toupper(x$V2)
+y <- gather(x, "roll", "outcome", 1:2)
+y$roll <- ifelse(y$roll == "V1", 1L, 2L)
+```
+
+```{r}
+table(y$outcome)
+```
+
+```{r}
+round(prop.table(table(y$outcome)), 3)
+```
+
+```{r}
+table(roll=y$roll, outcome=y$outcome)
+```
+
