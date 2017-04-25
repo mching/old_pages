@@ -1,0 +1,110 @@
+---
+title: "Untitled"
+author: "Michael Ching, MD, MPH"
+date: "December 16, 2016"
+output: html_document
+---
+
+I sit at a Pokestop at work and I've been gathering data on what comes out each time I spin the disk. The questions that I had were: (1) are there differences between Pokestops in what you get? (2) do Pokestops change what they give over time? Here's some analysis looking at those questions.
+
+The dataset is available for viewing [here](https://docs.google.com/spreadsheets/d/1FmApMo7dwv9JI6qSVKWKGv9iQU23isrbbbcvn0TVsZw/edit?usp=sharing).
+```{r}
+library(dplyr)
+x <- read.csv("../datasets/pokestops.csv")
+x <- tbl_df(x)
+x <- x[-13] # remove Total column since this will make calculations easier
+
+# Format Date variable
+x$Date <- as.character(x$Date)
+x$Date <- paste0(x$Date, "/2016")
+x$Date <- as.Date(x$Date, "%m/%d/%Y")
+```
+
+Because of how I entered the data, all the blank spaces were coerced into NAs. I had to process these into 0s.
+```{r}
+NAto0 <- function(z) {
+  z[is.na(z)] <- 0
+  return(z)
+}
+
+for(v in 1:length(x)) {
+  x[v] <- NAto0(x[v])
+}
+```
+
+There were `r nrow(x)` spins with a total of `r sum(x[,-c(1:3)])` items received. 
+
+Here are the mean number of items received per throw. I would disregard the stats on Max Potions since I reached level 25 at the very end of the analysis.
+```{r}
+sapply(x[-c(1:3)], mean)
+```
+
+Here is the overall frequency of what the Pokestops gave and the percentage breakdown.
+```{r}
+item_totals <- summarize_each(x[-c(1:3)], funs(sum))
+glimpse(item_totals)
+glimpse(round(item_totals/sum(item_totals), 3))
+```
+
+The Mapunapuna Garden Relief Pokestop had the most data. I compared it to the other Pokestops I visited. There wasn't an obvious difference between the two sites on any of the attributes.
+```{r}
+n_by_pokestop <- x %>% group_by(PokeStop) %>% select(-c(1:3)) %>% 
+  summarize_each(funs(sum)) %>% ungroup()
+t(n_by_pokestop)
+
+# Percentages
+p_MAP <- n_by_pokestop[1,-1]/sum(n_by_pokestop[1,-1]) # Mapunapuna
+p_OTHER <- n_by_pokestop[2,-1]/sum(n_by_pokestop[2,-1]) # Other
+
+round(data.frame(MAP = t(p_MAP), OTHER = t(p_OTHER)), 3)
+```
+
+We could compare the proportion for the two groups for each item, but in reality what I was most interested in was the Pokeball drop rates.  
+
+```{r}
+sum(n_by_pokestop[1,-1]) # number of MAP drops
+sum(n_by_pokestop[2,-1]) # number of other drops
+```
+
+```{r}
+n_pokeball <- x %>% select(c(PokeStop, PokeBall)) %>% group_by(PokeStop) %>%
+  summarize_all(funs(sum))
+```
+
+```{r}
+n_pokeball[2, 2]
+n_pokeball_table <- matrix(c(n_pokeball[1, 2], n_pokeball[2, 2], 
+  sum(n_by_pokestop[1,-1]) - n_pokeball[1, 2],
+  sum(n_by_pokestop[2,-1]) - n_pokeball[2, 2]),
+  nrow = 2)
+prop.test(x = n_pokeball_table)
+str(n_pokeball_table)
+```
+
+
+```{r}
+x_by_date <- x %>% select(-c(2:3)) %>% 
+  group_by(Date) %>% 
+  select(-1) %>%
+  summarize_each(funs(sum)) %>% 
+  ungroup()
+x_by_date
+p_by_date <- prop.table(as.matrix(x_by_date[,-1]), 1)
+p_by_date <- data.frame(p_by_date)
+p_by_date <- bind_cols(data.frame(spin_date = x_by_date$Date), p_by_date)
+
+```
+
+```{r}
+library(ggplot2)
+library(tidyr)
+
+item_names <- names(p_by_date)[-1] 
+p_by_date <- p_by_date %>% gather("item", "p", 2:10)
+p_by_date$item <- factor(p_by_date$item, levels = item_names)
+
+ggplot(p_by_date, aes(x = spin_date, y = p, color = item)) + geom_point() +
+  scale_color_brewer(palette = "Set3") + 
+  ggtitle("Daily Variation in Item Drop Rate")
+```
+

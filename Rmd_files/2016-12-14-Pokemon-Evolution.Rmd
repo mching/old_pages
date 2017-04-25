@@ -1,0 +1,84 @@
+---
+title: "Pidgey Evolution: Effects on Combat Power and Hit Points"
+author: "Michael Ching"
+date: "December 14, 2016"
+output: 
+  html_document:
+    keep_md: true
+---
+I was evolving some Pokemon in Pokemon Go today and wondered how much the Pokemon's attributes change after evolution. The attributes of interest were combat power (CP) and hit points (HP). I focused my analysis from Pidgeys because I had the most data points for this species.
+
+I collected data from one day's evolution, available for viewing [here](https://docs.google.com/spreadsheets/d/1kzYLqVn0-sA0ffGscNco9QkkC_0bce22S7pafiUs0uE/edit?usp=sharing).
+
+```{r, echo=FALSE, message=FALSE, warning=FALSE}
+library(dplyr)
+library(ggplot2)
+```
+```{r}
+x <- read.csv("../datasets/evolution.csv")
+x <- tbl_df(x)
+pidgeys <- filter(x, pokemon == "Pidgey")
+pidgeys
+```
+
+## Question 1: What is the relationship between CP before and CP after evolution?
+
+To explore what happened to CP before and after evolution, I plotted these on a graph.
+
+```{r}
+library(ggplot2)
+ggplot(pidgeys, aes(x = CP_pre, y = CP_post)) + geom_point(shape = 1) + 
+  ggtitle("CP pre and post evolution")
+```
+
+The relationship was roughly linear with apparently random variations from the line. 
+
+I modeled the relationship using simple linear regression. 
+
+```{r}
+pidgey_CP_model <- lm(CP_post ~ CP_pre, data = pidgeys)
+summary(pidgey_CP_model)
+```
+
+Based on the data, the estimated multipler was 2.026 with a standard deviation of 0.055. The model explained roughly 99% of the variation in CP after evolution. Here is the model in equation form.
+
+$$ CP_{post} = 2.02558 \times CP_{pre} - 14.0352 + \epsilon$$
+
+Those numbers were close enough to 2 and -14 to speculate that the Pokemon Go programmers used whole numbers in determining how much CP you get afterwards. 
+
+There is a [maximum CP for Pokemon](http://pokemongohub.net/pokemon-go-max-cp-per-level-chart/), but this might suggest that there is also a minimum CP. If we assume that the programmers would not want the evolved form to have a lower CP than the original form, we could solve for the theoretical minimum CP of a Pidgey. 
+
+We set the $CP_{post}$ to be equal to the $CP_{pre}$ in the equation and solve for $CP_{pre}$. Ignoring $\epsilon$ for simplicity we get:
+
+$$ CP_{pre} = 2.02558 \times CP_{pre} - 14.0352$$
+$$ -1.02558 \times CP_{pre} =  - 14.0352$$
+$$ CP_{pre} = 13.68513$$
+Since collecting the original data, I have caught more Pidgeys with lower CP (minimum 21). I will update the analysis once I've done their evolutions.
+
+## Question 2: How does evolution affect HP?
+
+To view the relationship between pre and post HP, I plotted HP before and after evolution. I did not have as many data points on this attribute.
+```{r}
+ggplot(pidgeys, aes(x = HP_pre, y = HP_post)) + geom_point(shape = 1) + 
+  ggtitle("HP pre and post evolution")
+```
+
+There was also a roughly linear relationship but it did not appear to be as linear as the CP before and after.
+
+```{r}
+pidgey_HP_model <- lm(HP_post ~ HP_pre, data = pidgeys)
+summary(pidgey_HP_model)
+```
+
+From these observations it looks like the model is:
+
+$$HP_{post} = 1.4324 \times HP_{pre} + 4.5598 + \epsilon$$
+
+As I wrote above for the CP analysis, I have collected more Pidgeys now and will update this analysis once I have evolved them.
+
+## Discussion
+There are some other people who have done similar analyses on the relationship between pre and post evolution CP. There are even calculators that provide estimates of the post evolution CP. Here's [one example](https://pogotoolkit.com/#selectedPokemon=016&combatPower=100).
+
+I was not able to find HP evolution analysis, so expanding this analysis could be of novel interest.
+
+Here's a data set that could be used for cross validation: https://www.openintro.org/stat/data/?data=pokemon
