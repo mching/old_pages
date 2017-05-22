@@ -1,16 +1,6 @@
 ---
 layout: page
 title: About me
-subtitle: Why you'd want to go on a date with me
 ---
 
-My name is Inigo Montoya. I have the following qualities:
-
-- I rock a great mustache
-- I'm extremely loyal to my family
-
-What else do you need?
-
-### my history
-
-To be honest, I'm having some trouble remembering right now, so why don't you just watch [my movie](http://en.wikipedia.org/wiki/The_Princess_Bride_%28film%29) and it will answer **all** your questions.
+I'm a pediatrician who works with kids who have autism and developmental delays. Like many of my patients, I love computers and making them do things. I mostly completed the Data Science specialization on Coursera and I use some of these skills in work, but still I am just an amateur at this. I hope to use this site as a sort of notebook to document some of my thoughts and keep my already waning programming skills up. Without peer review, I can't vouch for the accuracy of anything I say here, so please don't take anything I write here too seriously!
