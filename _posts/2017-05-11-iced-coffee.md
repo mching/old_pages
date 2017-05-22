@@ -1,6 +1,7 @@
-# Economical Iced Coffee
-
-
+---
+layout: post
+title: Economical Iced Coffee
+---
 
 My wife and I like iced coffee but drinking it at Starbucks is expensive. I've been making it myself at home and it's a reasonable facsimile at what I think is a much lower price. I decided to run the calculations to see how much we're saving.
 
