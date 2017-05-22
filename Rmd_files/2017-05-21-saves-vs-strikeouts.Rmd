@@ -1,0 +1,26 @@
+---
+title: "Saves vs. Strikeouts"
+output: html_document
+---
+
+```{r}
+library(Lahman)
+library(tidyverse)
+```
+
+
+```{r}
+data(Pitching)
+data(Master)
+x <- tbl_df(Pitching)
+```
+
+```{r}
+x %>% select(playerID, yearID, teamID, IPouts, SV, SO) %>% 
+  filter(SV>SO, yearID>1977) %>% 
+  mutate(IP = round(IPouts/3, 1)) %>%
+  inner_join(Master) %>% 
+  select(yearID, nameFirst, nameLast, teamID, IP, SO, SV) %>%
+  as.data.frame()
+```
+
