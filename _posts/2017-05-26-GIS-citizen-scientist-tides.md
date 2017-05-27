@@ -1,4 +1,7 @@
-# King Tides Citizen Science Project
+---
+layout: post
+title: King Tides Citizen Science Project
+---
 
 I read in the [newspaper](http://www.staradvertiser.com/2017/05/22/hawaii-news/king-tides-summer-swells-and-high-sea-levels-could-imperil-coastal-areas/) that the [University of Hawaii](http://ccsr.seagrant.soest.hawaii.edu/king-tides) was recruiting "citizen scientists" to help document the impact of this week's "[king tides](http://ccsr.seagrant.soest.hawaii.edu/Hawaii%20Sea%20Level)" on our coastline. I uploaded some photos to [the website](https://getliquid.io) but also found that we could download the dataset. I took this as an opportunity to learn something about geographic information systems (GIS) and R, and the end result was a pretty nice map of all the places that were photographed this week.
 
