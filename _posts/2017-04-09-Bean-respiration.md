@@ -1,7 +1,7 @@
 ---
 layout: post
 title: Graphing Bean Sprout Respiration with the Hadleyverse
-ext-js: //cdnjs.cloudflare.com/ajax/libs/mathjax/2.7.1/MathJax.js?config=TeX
+ext-js: //cdnjs.cloudflare.com/ajax/libs/mathjax/2.7.1/MathJax.js?config=TeX-AMS_CHTML
 ---
 
 My wife's high school biology students did a lab recently and had difficulty graphing the pooled data. One student allegedly took 2 hours to figure out how to do this in Excel. This seemed like it would be a nice exercise to try in the [Hadleyverse](http://adolfoalvarez.cl/the-hitchhikers-guide-to-the-hadleyverse/). To replicate this plot, I had to take her students' [data in wide form](https://docs.google.com/spreadsheets/d/1OTymer6lutVLNgZMhOq_LamKwXJpl41nAYSJ7MOC9f0/edit?usp=sharing), tidy it up, calculate means for each group and time, and then plot these. 
