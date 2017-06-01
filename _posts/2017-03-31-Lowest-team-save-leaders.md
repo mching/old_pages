@@ -16,26 +16,6 @@ Here I loaded the relevant packages and the Pitching table.
 ```r
 library(Lahman)
 library(dplyr)
-```
-
-```
-## 
-## Attaching package: 'dplyr'
-```
-
-```
-## The following objects are masked from 'package:stats':
-## 
-##     filter, lag
-```
-
-```
-## The following objects are masked from 'package:base':
-## 
-##     intersect, setdiff, setequal, union
-```
-
-```r
 library(ggplot2)
 data(Pitching)
 data(Master)

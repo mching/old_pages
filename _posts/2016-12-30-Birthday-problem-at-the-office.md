@@ -1,6 +1,7 @@
 ---
 layout: post
 title: Birthday Problem at Work
+ext-js: //cdnjs.cloudflare.com/ajax/libs/mathjax/2.7.1/MathJax.js?config=TeX
 ---
 
 My coworker keeps a list of our coworkers' birthdays so she can plan a monthly celebration. There are 36 of us in the office, and it turns out that none of us have the same birthday. My coworker wondered what was the chance of that happening.

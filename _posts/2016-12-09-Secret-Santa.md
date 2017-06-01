@@ -1,6 +1,7 @@
 ---
 title: "Simple Secret Santa Picker"
 layout: post
+ext-js: //cdnjs.cloudflare.com/ajax/libs/mathjax/2.7.1/MathJax.js?config=TeX
 ---
 
 [A post about automating Secret Santa assignments](https://thepracticalr.wordpress.com/2016/12/07/secret-santa-picker-2-using-r/) popped up in my Facebook feed the other day. This being the Christmas season, I took a look. It seemed a bit complex, and I wondered if I could make it more efficient.
