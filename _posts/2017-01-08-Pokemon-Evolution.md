@@ -1,7 +1,7 @@
 ---
 layout: post
 title: Pidgey Evolution--Effects on Combat Power and Hit Points (Updated)
-ext-js: //cdnjs.cloudflare.com/ajax/libs/mathjax/2.7.1/MathJax.js?config=TeX
+ext-js: //cdnjs.cloudflare.com/ajax/libs/mathjax/2.7.1/MathJax.js?config=TeX-AMS_CHTML
 ---
 
 I was evolving some Pokemon in Pokemon Go and wondered how much the Pokemon's attributes change after evolution. The attributes of interest were combat power (CP) and hit points (HP). I focused my analysis from Pidgeys because I had the most data points for this species.
