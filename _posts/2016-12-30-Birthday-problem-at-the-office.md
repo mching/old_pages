@@ -17,6 +17,7 @@ We can see that this generalizes to:
 
 $$ P(n \space birthdays \space are \space all \space different) = {365 \over 365} \times {364 \over 365} \times \ldots \times {365 - n + 1 \over 365} $$
 $$ = {365! \over 365^{n}(365-n)!}$$
+
 To get the probability that there is at least two or more birthdays are the same, you can subtract this number from one.
 
 $$ P(at \space least \space two \space birthdays \space are \space the \space same) = 1- {365! \over 365^{n}(365-n)!} $$
