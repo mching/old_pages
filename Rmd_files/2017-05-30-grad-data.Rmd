@@ -73,7 +73,7 @@ wilcox.test(x$lists~x$sdoi)
 Out of curiousity I also looked at gender effects. There were more girls than boys in the class, and girls appeared to outperform boys (p < 0.00001).
 ```{r}
 table(x$lists_f, x$gender)
-round(prop.table(table(x$lists_f, x$gender)), 3)
+round(prop.table(table(x$lists_f, x$gender), 2), 3)
 wilcox.test(x$lists~x$gender)
 ```
 
