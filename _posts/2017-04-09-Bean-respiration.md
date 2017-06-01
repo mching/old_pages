@@ -124,7 +124,7 @@ summary(model1)
 ## F-statistic: 163.2 on 3 and 449 DF,  p-value: < 2.2e-16
 ```
 
-The model came out pretty nice! Here it is in algebraic form where a is age (young corresponds to \\(a = 1\\) and old corresponds to \\(a = 0\\)) and t is time elapsed in minutes:
+The model came out pretty nice! Here it is in algebraic form where \\(a\\) is age (young corresponds to \\(a = 1\\) and old corresponds to \\(a = 0\\)) and \\(t\\) is time elapsed in minutes:
 
 $$distance = 4.2 + 7t + 10.9a + 5.2ta$$
 
@@ -166,3 +166,6 @@ I should acknowledge that much of the code for the visualizations was based on t
 
 ## Conclusion
 Old bean sprouts have lower respiration than young bean sprouts although there is significant variability in the data.
+
+### Edit May 31, 2017
+I've since learned that the preferred term is now tidyverse, as in the package [`tidyverse`](https://cran.r-project.org/web/packages/tidyverse/index.html), but since I wrote this post using the term Hadleyverse, I've decided to keep it for posterity sake.
