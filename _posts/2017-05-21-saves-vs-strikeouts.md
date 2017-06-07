@@ -19,7 +19,7 @@ x <- tbl_df(Pitching)
 It was a simple enough query using the `tidyverse`. I decided to only look at the last 40 years since the modern closer is a relatively recent concept. 
 
 ## Results
-The list of pitchers with more saves than strikeouts encompassed 23 players, of whom four had only 2 saves in that particular season. Todd Jones had more saves than strikeouts 3 years in a row. The biggest discrepancy was Jim Johnson in 2012 who had 51 saves with only 41 strikeouts. 
+The list of pitchers with more saves than strikeouts encompassed 23 players, of whom four had only 2 saves in that particular season. Todd Jones had more saves than strikeouts 3 years in a row. The biggest discrepancy was Danny Kolb in 2004 when he 39 saves with only 21 strikeouts. 
 
 This may be an increasingly rare phenomenon. In the last 6 years, there has only been one year where a pitcher had more saves than strikeouts. 
 
