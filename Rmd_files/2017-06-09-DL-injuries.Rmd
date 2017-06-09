@@ -1,0 +1,42 @@
+---
+title: "Untitled"
+author: "Michael Ching"
+date: "June 9, 2017"
+output: html_document
+---
+
+```{r}
+library(dplyr)
+library(ggplot)
+library(tidyr)
+DL <- read.csv("./datasets/DL2010_2016.csv")
+DL <- tbl_df(DL)
+str(DL)
+```
+
+```{r}
+DL$on_DL <- as.POSIXct(DL$on_DL)
+DL$off_DL <- as.POSIXct(DL$off_DL)
+```
+
+```{r}
+summary(DL$days)
+which(DL$days < 0)
+DL[which(DL$days < 0),]
+```
+
+What are these negative numbers for days on the DL? Russell Branyan started 2010 on the DL with a herniated disk ([source](http://waitingfornextyear.com/2010/03/russell-branyan-to-start-season-on-dl/)) and came off the DL around April 20 ([source](https://www.youtube.com/watch?v=1xrkb5elJnY)). Milton Bradley ended this season on DL after being placed on it in July for knee injury. Hairston was injured in September with a fractured right tibia. I'll manually recode Branyan's off DL date to April 20 and the others to the end of the season.
+
+```{r}
+DL %>% filter(Season == 2010) %>% summarize(max(off_DL))
+```
+
+```{r}
+DL$off_DL[which(DL$days <0)] <- as.POSIXct(c("2010-04-20", "2010-10-03", "2010-10-03"))
+DL$days[which(DL$days <0)] <- as.integer(DL$off_DL[which(DL$days <0)] - DL$on_DL[which(DL$days <0)])
+```
+
+```{r}
+DL %>% filter(censored_right == F) %>% group_by(Location_recode) %>% summarize(mean(days))
+```
+
