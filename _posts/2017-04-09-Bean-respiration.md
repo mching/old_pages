@@ -1,6 +1,7 @@
 ---
 layout: post
 title: Graphing Bean Sprout Respiration with the Hadleyverse
+ext-js: //cdnjs.cloudflare.com/ajax/libs/mathjax/2.7.1/MathJax.js?config=TeX-AMS_CHTML
 ---
 
 My wife's high school biology students did a lab recently and had difficulty graphing the pooled data. One student allegedly took 2 hours to figure out how to do this in Excel. This seemed like it would be a nice exercise to try in the [Hadleyverse](http://adolfoalvarez.cl/the-hitchhikers-guide-to-the-hadleyverse/). To replicate this plot, I had to take her students' [data in wide form](https://docs.google.com/spreadsheets/d/1OTymer6lutVLNgZMhOq_LamKwXJpl41nAYSJ7MOC9f0/edit?usp=sharing), tidy it up, calculate means for each group and time, and then plot these. 
@@ -13,26 +14,6 @@ I used the `dplyr`, `tidyr`, and `ggplot2` packages for this analysis.
 
 ```r
 library(dplyr)
-```
-
-```
-## 
-## Attaching package: 'dplyr'
-```
-
-```
-## The following objects are masked from 'package:stats':
-## 
-##     filter, lag
-```
-
-```
-## The following objects are masked from 'package:base':
-## 
-##     intersect, setdiff, setequal, union
-```
-
-```r
 library(tidyr)
 library(ggplot2)
 ```
@@ -144,7 +125,7 @@ summary(model1)
 ## F-statistic: 163.2 on 3 and 449 DF,  p-value: < 2.2e-16
 ```
 
-The model came out pretty nice! Here it is in algebraic form where a is age (young corresponds to $a = 1$ and old corresponds to $a = 0$) and t is time elapsed in minutes:
+The model came out pretty nice! Here it is in algebraic form where \\(a\\) is age (young corresponds to \\(a = 1\\) and old corresponds to \\(a = 0\\)) and \\(t\\) is time elapsed in minutes:
 
 $$distance = 4.2 + 7t + 10.9a + 5.2ta$$
 
@@ -186,3 +167,6 @@ I should acknowledge that much of the code for the visualizations was based on t
 
 ## Conclusion
 Old bean sprouts have lower respiration than young bean sprouts although there is significant variability in the data.
+
+### Edit May 31, 2017
+I've since learned that the preferred term is now tidyverse, as in the package [`tidyverse`](https://cran.r-project.org/web/packages/tidyverse/index.html), but since I wrote this post using the term Hadleyverse, I've decided to keep it for posterity sake.

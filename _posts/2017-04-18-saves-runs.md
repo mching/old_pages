@@ -1,6 +1,7 @@
 ---
 layout: post
 title: Effect of Runs and Other Factors on Team Saves in Major League Baseball
+ext-js: //cdnjs.cloudflare.com/ajax/libs/mathjax/2.7.1/MathJax.js?config=TeX-AMS_CHTML
 ---
 
 From listening to [my favorite fantasy baseball podcast](http://www.espn.com/espnradio/podcast/archive/_/id/2544461) it seems that there is a belief that teams that score lots of runs are not likely to produce saves. The idea seems to be that such teams would blow out their competitors and so have less opportunity for games to be saved. While it made sense, I wondered what the data said.
@@ -8,26 +9,6 @@ From listening to [my favorite fantasy baseball podcast](http://www.espn.com/esp
 
 ```r
 library(dplyr)
-```
-
-```
-## 
-## Attaching package: 'dplyr'
-```
-
-```
-## The following objects are masked from 'package:stats':
-## 
-##     filter, lag
-```
-
-```
-## The following objects are masked from 'package:base':
-## 
-##     intersect, setdiff, setequal, union
-```
-
-```r
 library(ggplot2)
 library(Lahman)
 data("Teams")

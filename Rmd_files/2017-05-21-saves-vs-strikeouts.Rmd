@@ -1,0 +1,37 @@
+---
+title: "Saves vs. Strikeouts"
+output: 
+  html_document:
+    keep_md: true
+---
+
+On my favorite fantasy baseball podcast, the host mentioned the phenomenon of pitchers who had more saves than strikeouts. This seemed like it would be fairly uncommon since it seems that many closers are power pitchers (e.g., Aroldis Chapman). I decided to investigate further using the Lahman database.
+
+# Methods
+I used the Lahman database again, which is perfect for answering this kind of questions. It has a Pitching table that contains season long stats for every pitcher from 1871 to 2015 (as of this post).
+```{r}
+library(Lahman)
+library(tidyverse)
+data(Pitching)
+data(Master)
+x <- tbl_df(Pitching)
+```
+
+It was a simple enough query using the `tidyverse`. I decided to only look at the last 40 years since the modern closer is a relatively recent concept. 
+
+## Results
+The list of pitchers with more saves than strikeouts encompassed 23 players, of whom four had only 2 saves in that particular season. Todd Jones had more saves than strikeouts 3 years in a row. The biggest discrepancy was Jim Johnson in 2012 who had 51 saves with only 41 strikeouts. 
+
+This may be an increasingly rare phenomenon. In the last 6 years, there has only been one year where a pitcher had more saves than strikeouts. 
+
+```{r}
+x %>% select(playerID, yearID, teamID, IPouts, SV, SO) %>% 
+  filter(SV>SO, yearID>1977) %>% 
+  mutate(IP = round(IPouts/3, 1)) %>%
+  inner_join(Master) %>% 
+  select(yearID, nameFirst, nameLast, teamID, IP, SO, SV) %>%
+  as.data.frame()
+```
+
+## Conclusion
+It isn't common to have more saves than strikeouts. This has happened about 23 times in the last 40 years, or about once every other year.

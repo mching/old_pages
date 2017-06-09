@@ -1,14 +1,11 @@
+# project
 _site
-.DS_Store
-.jekyll
-.jekyll-metadata
-.bundle
 .sass-cache
-Gemfile
-Gemfile.lock
-node_modules
-package.json
-.Rhistory
-.Rproj.user
-*.html
-Rmd_files/*.md
+.vagrant
+
+# general
+.DS_Store
+Thumbs.db
+ehthumbs.db
+.Rproj.user/*
+.html
