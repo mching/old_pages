@@ -1,0 +1,129 @@
+---
+title: "Goodreads"
+output: html_document
+---
+
+I just finished my 2017 Reading Challenge on Goodreads. My goal was to read 15 books this year. Poking around the site I discovered that I could export my data. I decided to have a look to see what my reading habits looked like.
+
+```{r setup, include=FALSE}
+knitr::opts_chunk$set(echo = TRUE)
+```
+
+```{r}
+library(dplyr)
+library(ggplot2)
+library(lubridate)
+books <- read.csv("../datasets/goodreads.csv", colClasses = "character")
+books <- tbl_df(books)
+```
+
+## Dataset
+Here's how the data are arranged:
+
+```{r}
+str(books)
+```
+
+## Data Cleaning
+Some boring data cleaning code...
+
+```{r}
+# Factor author names
+books$Author <- factor(books$Author)
+
+# Factor bookshelves
+books$Exclusive.Shelf <- factor(books$Exclusive.Shelf)
+
+# Numeric ratings
+books$My.Rating <- as.numeric(books$My.Rating)
+books$Average.Rating <- as.numeric(books$Average.Rating)
+
+# Number of Pages
+books$Number.of.Pages <- as.integer(books$Number.of.Pages)
+
+# Years
+books$Year.Published <- as.integer(books$Year.Published)
+books$Original.Publication.Year <- as.integer(books$Original.Publication.Year)
+
+# Dates
+books$Date.Added <- ymd(books$Date.Added)
+books$Date.Read <- ymd(books$Date.Read)
+```
+
+## Books Read vs Added
+I've read 150 books on the list and have 16 books to read. There are 2 books that I'm sort of currently reading.
+
+```{r}
+books %>% select(Exclusive.Shelf) %>% 
+  group_by(Exclusive.Shelf) %>% 
+  summarize(n = length(Exclusive.Shelf))
+```
+
+
+### Dates Added and Read
+I've only been adding to this off and on, and we can view the distribution of when I added and read books.
+
+```{r}
+ggplot(books, aes(x = Date.Added)) + geom_histogram(binwidth = 365) + ggtitle("Date Book Added")
+```
+
+```{r}
+books %>% filter(!is.na(Date.Read)) %>% 
+  ggplot(aes(x = Date.Read)) + geom_histogram(binwidth = 365) + ggtitle("Date Book Read")
+```
+
+## Most popular author
+
+```{r}
+books %>% group_by(Author) %>% summarize(n = length(Author)) %>% arrange(desc(n))
+```
+
+Apparently I really like Haruki Murakami but everyone else is meh.
+
+## My Ratings
+
+How's the rating I gave books?
+
+```{r}
+# Unrated books got a rating of zero
+books$My.Rating <- ifelse(books$My.Rating == 0, NA, books$My.Rating)
+
+books %>% filter(!is.na(My.Rating)) %>%
+  ggplot(aes(x = My.Rating)) + geom_histogram(binwidth = 1) +
+  ggtitle("My Ratings")
+```
+
+## Difference between My Ratings and the Masses
+
+```{r}
+books %>% select(Title, Author, My.Rating, Average.Rating) %>% mutate(dRating = My.Rating - Average.Rating) %>% 
+  filter(!is.na(dRating)) %>% arrange(desc(dRating)) 
+
+books %>% select(Title, Author, My.Rating, Average.Rating) %>% mutate(dRating = My.Rating - Average.Rating) %>% 
+  filter(!is.na(dRating)) %>% arrange(desc(dRating)) %>%
+  ggplot(aes(x = dRating)) +
+  geom_histogram(binwidth = 0.25)
+```
+
+
+## Publication Date
+
+```{r}
+books %>% ggplot(aes(x = Original.Publication.Year)) + geom_histogram(binwidth = 5)
+```
+
+```{r}
+books %>% filter(Original.Publication.Year > 1700) %>%
+  ggplot(aes(x = Original.Publication.Year)) + geom_histogram(binwidth = 2)
+```
+
+## Number of Pages (and over time)
+
+```{r}
+books %>% mutate(Year_read = factor(year(Date.Read))) %>%
+  filter(!is.na(Year_read)) %>%
+  group_by(Year_read) %>% 
+  summarize(npages = sum(Number.of.Pages, na.rm = T)) %>%
+  ggplot(aes(x = Year_read, y = npages)) +
+  geom_bar(stat="identity")
+```
