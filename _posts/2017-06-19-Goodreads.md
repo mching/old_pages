@@ -1,4 +1,7 @@
-# Goodreads Analysis
+---
+layout: post
+title: Exploration of Our Reading Habits
+---
 
 I just finished my 2017 Reading Challenge on Goodreads. My goal was to read 15 books this year. Poking around the site I discovered that I could export my data. I decided to have a look to see what my reading habits looked like, and since I was doing this for me, I decided to look at my wife's data too.
 
