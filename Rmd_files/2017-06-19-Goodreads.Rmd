@@ -14,8 +14,17 @@ library(ggplot2)
 library(lubridate)
 library(hrbrthemes)
 books <- read.csv("../datasets/goodreads.csv", colClasses = "character")
+books_wife <- read.csv("../datasets/goodreads_wife.csv", colClasses = "character")
 books <- tbl_df(books)
+books_wife <- tbl_df(books_wife)
 ```
+
+```{r}
+books <- mutate(books, reader = "me")
+books_wife <- mutate(books_wife, reader = "wife")
+books <- full_join(books, books_wife)
+```
+
 The data were arranged into variables like Author and Title but also Pages, Publication Date, Date Read, My Rating, Average Rating, etc. 
 
 ```{r}
@@ -49,11 +58,10 @@ books$Date.Read <- ymd(books$Date.Read)
 ```
 
 ## Books Read vs Added
-I've recorded 150 books on the website as being read, and have listed 16 books to read. There were 2 books that I'm sort of currently reading.
+I've recorded 150 books as being read, and the wife has recorded 302 books as being read.
 
 ```{r}
-books %>% select(Exclusive.Shelf) %>% 
-  group_by(Exclusive.Shelf) %>% 
+books %>% select(Exclusive.Shelf, reader) %>% group_by(reader, Exclusive.Shelf) %>% 
   summarize(n = length(Exclusive.Shelf))
 ```
 
@@ -61,54 +69,64 @@ books %>% select(Exclusive.Shelf) %>%
 I have only been adding to this list off and on since joining Goodreads. I plotted below the distribution of when I added and read books.
 
 ```{r}
-tmp1 <- books %>% select(Book.Id, Date.Added) %>% mutate(action = "added") %>% rename(year = Date.Added)
-tmp2 <- books %>% select(Book.Id, Date.Read) %>% mutate(action = "read") %>% rename(year = Date.Read)
+tmp1 <- books %>% select(Book.Id, Date.Added, reader) %>% mutate(action = "added") %>% rename(year = Date.Added)
+tmp2 <- books %>% select(Book.Id, Date.Read, reader) %>% mutate(action = "read") %>% rename(year = Date.Read)
 bind_rows(tmp1, tmp2) %>% filter(!is.na(year)) %>%
   ggplot(aes(x = year, fill = action)) +
   geom_histogram(binwidth = 365, position=position_dodge()) +
   ggtitle("Books Added and Read per Year") +
   ylab("number of books") +
   xlab("year") +
-  theme_ipsum()
+  theme_ipsum() +
+  facet_grid(reader ~ .)
 ```
 
-It looks like I signed up for Goodreads in 2012 and started adding books to my list of read books. If I couldn't remember when I read the book, I left the date read field blank. After this initial flurry of adding books, I recorded little activity on the website until about 2014-2015 when I started using Goodreads in earnest. This graph doesn't really represent my reading history since there's a lot of missing data, but it does represent pretty well how I've used this website.
+It looks like I signed up for Goodreads in 2012 and started adding books to my list of read books. If I couldn't remember when I read the book, I left the date read field blank. My wife started in 2009 and had a similar pattern of behavior. After this initial flurry of adding books, I recorded little activity on the website until about 2014-2015 when I started using Goodreads in earnest. This graph doesn't really represent my reading history since there's a lot of missing data, but it does represent pretty well how I've used this website.
 
 ## Most popular author
 
-I wondered which author I had read the most of. This is subject to recall bias, but it seems that #1 is Haruki Murakami, whose work I just love. Then came two comic artists (Gene Luen Yang and Sara Varon). Finally there were a whole bunch of 3-timers including Hugh Howey (Wool series), John Elder Robison (autistic writer), Stieg Larsson (The Girl Who... series) Suzanne Collins (Hunger Games series). 
+I wondered which author we had read the most of. This is subject to recall bias, but it seems that for me #1 is Haruki Murakami, whose work I just love. Then came two comic artists (Gene Luen Yang and Sara Varon). Finally there were a whole bunch of 3-timers including Hugh Howey (Wool series), John Elder Robison (autistic writer), Stieg Larsson (The Girl Who... series) Suzanne Collins (Hunger Games series). 
 
 ```{r}
-books %>% group_by(Author) %>% summarize(n = length(Author)) %>% arrange(desc(n))
+books %>% filter(reader == "me") %>% 
+  group_by(Author) %>% summarize(n = length(Author)) %>% arrange(desc(n))
 ```
 
-Apparently I really like Haruki Murakami but everyone else is meh.
+For my wife, it's the romance novels that predominate.
+
+```{r}
+books %>% filter(reader == "wife") %>% 
+  group_by(Author) %>% summarize(n = length(Author)) %>% arrange(desc(n))
+```
+
 
 ## My Ratings
 
-I wondered about the ratings I had given books. 
+I wondered about the ratings we had given books. 
 
 ```{r}
 # Unrated books got a rating of zero
 books$My.Rating <- ifelse(books$My.Rating == 0, NA, books$My.Rating)
 
 books %>% filter(!is.na(My.Rating)) %>%
-  ggplot(aes(x = My.Rating)) + geom_histogram(binwidth = 1) +
-  ggtitle("My Ratings") +
-  xlab("My Rating") + 
+  ggplot(aes(x = My.Rating, fill = reader)) + 
+  geom_histogram(binwidth = 1, position=position_dodge()) +
+  ggtitle("Our Ratings") +
+  xlab("Rating") + 
   theme_ipsum()
 ```
 
-It looks pretty heavily skewed to 4 and 5 star ratings. In fact, my median rating was a 4.
+It looks pretty heavily skewed to 4 and 5 star ratings. In fact, both of our median ratings were a 4.
 
 ```{r}
-median(books$My.Rating, na.rm = T)
+books %>% group_by(reader) %>% summarize(median(My.Rating, na.rm = T))
 ```
 
 ```{r}
 books %>% 
-  ggplot(aes(x=Average.Rating)) + geom_histogram(binwidth = 0.2) + 
-  ggtitle("Community Ratings of Books that I've Added") +
+  ggplot(aes(x=Average.Rating, fill = reader)) + 
+  geom_histogram(binwidth = 0.1) + 
+  ggtitle("Community Ratings of Books that We've Added") +
   xlab("Rating") +
   theme_ipsum()
 ```
@@ -124,35 +142,37 @@ median(books$Average.Rating)
 Were there books that I enjoyed way more or less than the community? I didn't have the distribution of the ratings for each book, but I did have the mean and could calculate the difference between the community average rating and mine. 
 
 ```{r}
-books %>% select(Title, Author, My.Rating, Average.Rating) %>% mutate(dRating = My.Rating - Average.Rating) %>% 
+books %>% select(Title, Author, My.Rating, Average.Rating, reader) %>% 
+  mutate(dRating = My.Rating - Average.Rating) %>% 
   filter(!is.na(dRating)) %>% arrange(desc(dRating)) %>%
-  ggplot(aes(x = dRating)) +
-  geom_histogram(binwidth = 0.25) +
+  ggplot(aes(x = dRating, fill = reader)) +
+  geom_histogram(binwidth = 0.25, position = "identity", alpha = 0.5) +
   ggtitle("Difference between My Ratings and Community Ratings") +
   xlab("My Rating - Community Rating") +
   theme_ipsum()
 ```
 
-Here are the top 10 books that I liked more than the community.
+Here are the top 10 books that we liked more than the community.
 ```{r}
 books %>% select(Title, Author, My.Rating, Average.Rating) %>% mutate(dRating = My.Rating - Average.Rating) %>% 
   filter(!is.na(dRating)) %>% arrange(desc(dRating))
 ```
 
-And the ones I liked worse than the community.
+And the ones we liked worse than the community.
 ```{r}
 books %>% select(Title, Author, My.Rating, Average.Rating) %>% mutate(dRating = My.Rating - Average.Rating) %>% 
   filter(!is.na(dRating)) %>% arrange(dRating)
 ```
 
-Interestingly enough, John Elder Robison wrote #3 on the worse and #7 on the better lists.
 
 ## Publication Date
 
 How old were the books I've been reading? 
 ```{r}
-books %>% ggplot(aes(x = Original.Publication.Year)) + geom_histogram(binwidth = 5) +
-  ggtitle("Publication Year of My Books") +
+books %>% filter(!is.na(Original.Publication.Year)) %>%
+  ggplot(aes(x = Original.Publication.Year, fill = reader)) + 
+  geom_histogram(binwidth = 5, position = "identity", alpha = 0.5) +
+  ggtitle("Original Publication Year") +
   xlab("Publication Year") + 
   theme_ipsum()
 ```
@@ -160,8 +180,9 @@ books %>% ggplot(aes(x = Original.Publication.Year)) + geom_histogram(binwidth =
 These two 17th century books were Shakespeare plays I had read before going to see them live (Othello, Twelfth Night). Taking those out led to this admittedly still skewed distribution.
 
 ```{r}
-books %>% filter(Original.Publication.Year > 1700) %>%
-  ggplot(aes(x = Original.Publication.Year)) + geom_histogram(binwidth = 2) +
+books %>% filter(Original.Publication.Year > 1900) %>%
+  ggplot(aes(x = Original.Publication.Year, fill = reader)) + 
+  geom_histogram(binwidth = 2, position = "identity", alpha = 0.5) +
   xlab("Original Publication Year") +
   ggtitle("Original Publication Year (Books Written since 1900)") +
   theme_ipsum()
@@ -173,7 +194,7 @@ The distribution is highly skewed, with a median original publication date of 20
 median(books$Original.Publication.Year, na.rm = T)
 ```
 
-Those other outliers were:
+Those outliers were:
 
 ```{r}
 books %>% filter(Original.Publication.Year < 1980) %>% 
@@ -184,19 +205,19 @@ books %>% filter(Original.Publication.Year < 1980) %>%
 
 ## Number of Pages (and over time)
 
-The last thing I looked at was the number of pages I've read since beginning recording in earnest. 
+The last thing I looked at was the number of pages we've read since beginning recording in earnest. 
 
 ```{r}
 books %>% mutate(Year_read = factor(year(Date.Read))) %>%
   filter(!is.na(Year_read)) %>%
-  group_by(Year_read) %>% 
+  group_by(Year_read, reader) %>% 
   summarize(npages = sum(Number.of.Pages, na.rm = T)) %>%
-  ggplot(aes(x = Year_read, y = npages)) +
-  geom_bar(stat="identity") + 
+  ggplot(aes(x = Year_read, y = npages, fill = reader)) +
+  geom_bar(stat="identity", position = "identity", alpha = 0.5) + 
   xlab("Year Read") + 
   ylab("Number of Pages") +
   ggtitle("Pages Recorded as Read per Year") +
-  theme_ipsum()
+  theme_ipsum() 
 ```
 
 This year (2017) has been a big reading year and it's not even half over yet. I think the summer reading program from my library and the Goodreads Reading Challenge have been big reasons that I have done so much this year.
@@ -204,10 +225,10 @@ This year (2017) has been a big reading year and it's not even half over yet. I 
 ## Date Published vs. Date Read
 
 ```{r}
-books %>% select(Date.Read, Original.Publication.Year) %>% 
+books %>% select(Date.Read, Original.Publication.Year, reader) %>% 
   filter(!is.na(Date.Read) & !is.na(Original.Publication.Year)) %>%
-  ggplot(aes(x = Date.Read, y = Original.Publication.Year)) +
-  geom_point() +
+  ggplot(aes(x = Date.Read, y = Original.Publication.Year, color = reader)) +
+  geom_point(alpha = 0.2) +
   theme_ipsum() +
   labs(title = "Date Read vs. Original Publication Year",
        x = "Date Read",
@@ -218,13 +239,13 @@ Shoot, those Shakespeare plays really mess with the plot. I don't think even put
 
 ```{r}
 library(scales)
-books %>% select(Date.Read, Original.Publication.Year) %>% 
+books %>% select(Date.Read, Original.Publication.Year, reader) %>% 
   filter(!is.na(Date.Read) & !is.na(Original.Publication.Year)) %>%
   filter(Original.Publication.Year > 1700) %>% 
-  ggplot(aes(x = Date.Read, y = Original.Publication.Year)) +
-  geom_point() +
+  ggplot(aes(x = Date.Read, y = Original.Publication.Year, color = reader)) +
+  geom_point(alpha = 0.2) +
   theme_ipsum() +
-  labs(title = "Date Read vs. Original Publication Year",
+  labs(title = "Date Read vs. Original Publication Year (Books after 1700)",
        x = "Date Read",
        y = "Original Publication Year")
 ```
