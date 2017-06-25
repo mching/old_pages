@@ -427,27 +427,6 @@ books %>% filter(Original.Publication.Year < 1980) %>%
 ## 25                                        Wind/Pinball: Two Early Novels
 ```
 
-## Number of Pages (and over time)
-
-The last thing I looked at was the number of pages we've read since beginning recording in earnest. 
-
-
-```r
-books %>% mutate(Year_read = factor(year(Date.Read))) %>%
-  filter(!is.na(Year_read)) %>%
-  group_by(Year_read, reader) %>% 
-  summarize(npages = sum(Number.of.Pages, na.rm = T)) %>%
-  ggplot(aes(x = Year_read, y = npages, fill = reader)) +
-  geom_bar(stat="identity", position = "identity", alpha = 0.5) + 
-  xlab("Year Read") + 
-  ylab("Number of Pages") +
-  ggtitle("Pages Recorded as Read per Year") +
-  theme_ipsum() 
-```
-
-![](https://mching.github.io/images/goodreads7.png)<!-- -->
-
-This year (2017) has been a big reading year and it's not even half over yet. I think the summer reading program from my library and the Goodreads Reading Challenge have been big reasons that I have done so much this year.
 
 ## Date Published vs. Date Read
 
@@ -483,3 +462,38 @@ books %>% select(Date.Read, Original.Publication.Year, reader) %>%
 
 ![](https://mching.github.io/images/goodreads9.png)<!-- -->
 
+## Number of Pages (and over time)
+
+I looked at the number of pages we've read since beginning recording in earnest. 
+
+
+```r
+books %>% mutate(Year_read = factor(year(Date.Read))) %>%
+  filter(!is.na(Year_read)) %>%
+  group_by(Year_read, reader) %>% 
+  summarize(npages = sum(Number.of.Pages, na.rm = T)) %>%
+  ggplot(aes(x = Year_read, y = npages, fill = reader)) +
+  geom_bar(stat="identity", position = "identity", alpha = 0.5) + 
+  xlab("Year Read") + 
+  ylab("Number of Pages") +
+  ggtitle("Pages Recorded as Read per Year") +
+  theme_ipsum() 
+```
+
+![](https://mching.github.io/images/goodreads7.png)<!-- -->
+
+This year (2017) has been a big reading year and it's not even half over yet. I think the summer reading program from my library and the Goodreads Reading Challenge have been big reasons that I have done so much this year.
+
+
+## Discussion
+I don't think there's much in the way of a takeaway from this analysis. This was more exploration than anything but I did learn a lot about several new packages and some old ones. The main benefit for me was practicing using `dplyr` to slice and dice data in different ways. I also got some practice using `ggplot2` and displaying two data sources (me and my wife) with several approaches (side by side, stacked, overlay). I also learned `lubridate` for easier date manipulation and `hrbrthemes` for making these charts look fancy.
+
+One thing I can say is that we tend to read books that are recently published as opposed to reading older books. One other thing is that our ratings are similar to those of the community.
+
+Comparing my wife and me, it's pretty obvious that she reads more than me (and likely will continue to). In fact, she's reading right now while I fuss around with this blog post.
+
+### Limitations
+It's hard to say much more than this because these data are far from complete. They are biased towards the books that we have read since starting to use Goodreads. 
+
+## Conclusion
+We don't read a lot of old books. Our ratings are similar to those of the Goodreads community. My wife reads more than me, not just number of books but also pages. I learned and practiced a bunch of new packages.
